@@ -53,9 +53,7 @@ public class RenderBatch {
   }
 
   private void updateAndRenderSpriteComponents() {
-    this.spriteComponents.entrySet()
-      .parallelStream()
-      .forEach(entry -> this.updateSpriteComponents(entry.getKey(), entry.getValue()));
+    this.spriteComponents.forEach(this::updateSpriteComponents);
     this.renderSpriteComponents();
   }
 
