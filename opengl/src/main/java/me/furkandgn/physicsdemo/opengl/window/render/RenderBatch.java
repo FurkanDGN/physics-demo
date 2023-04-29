@@ -89,7 +89,7 @@ public class RenderBatch {
   }
 
   private void initSpriteComponent(SpriteComponent spriteComponent) {
-    RenderContext renderContext = this.createRenderContext(spriteComponent);
+    RenderContext renderContext = this.getOrCreateRenderContext(spriteComponent);
     this.updateVerticesAndIndices(spriteComponent, spriteComponent.body().getClass());
 
     this.setupVertexBuffer(renderContext);
@@ -98,7 +98,7 @@ public class RenderBatch {
     this.unbindVertexArrayAndBuffers();
   }
 
-  private RenderContext createRenderContext(SpriteComponent spriteComponent) {
+  private RenderContext getOrCreateRenderContext(SpriteComponent spriteComponent) {
     Class<? extends Body> bodyClass = spriteComponent.body().getClass();
     return this.renderContexts.computeIfAbsent(bodyClass, key -> this.createRenderContext(bodyClass));
   }
