@@ -7,23 +7,26 @@ import me.furkandgn.physicsdemo.common.body.RectBody;
 import me.furkandgn.physicsdemo.common.gui.world.AbstractWorld;
 import me.furkandgn.physicsdemo.opengl.Constants;
 import me.furkandgn.physicsdemo.opengl.window.camera.Camera;
-import me.furkandgn.physicsdemo.opengl.window.component.factory.CircleIndicesFactory;
-import me.furkandgn.physicsdemo.opengl.window.component.factory.CircleVerticesFactory;
-import me.furkandgn.physicsdemo.opengl.window.component.factory.RectangleIndicesFactory;
-import me.furkandgn.physicsdemo.opengl.window.component.factory.RectangleVerticesFactory;
+import me.furkandgn.physicsdemo.opengl.window.component.factory.*;
 import me.furkandgn.physicsdemo.opengl.window.component.sprite.SpriteComponent;
 import me.furkandgn.physicsdemo.opengl.window.render.RenderBatchManager;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 /**
  * @author Furkan Doğan
  */
 public class SimulationWorld extends AbstractWorld {
 
+  private static final Map<Class<? extends Body>, IndicesFactory> INDICES_FACTORIES = Map.of(
+    RectBody.class, new RectangleIndicesFactory(),
+    CircleBody.class, new CircleIndicesFactory()
+  );
+
   private final RenderBatchManager renderBatchManager;
-  private final List<SpriteComponent> spriteComponents = new ArrayList<>();
+  private final List<SpriteComponent> spriteComponents = new CopyOnWriteArrayList<>();
   private final int height;
 
   public SimulationWorld(PhysicEngine physicEngine,
@@ -48,6 +51,10 @@ public class SimulationWorld extends AbstractWorld {
   public void tick(double dt) {
     for (SpriteComponent spriteComponent : this.spriteComponents) {
       spriteComponent.update(dt);
+      if (spriteComponent.shouldDestroy()) {
+        this.bodies.remove(spriteComponent.body());
+        this.spriteComponents.remove(spriteComponent);
+      }
     }
     super.tick(dt);
   }
@@ -62,10 +69,11 @@ public class SimulationWorld extends AbstractWorld {
   }
 
   private SpriteComponent buildSpriteComponent(Body body) {
+    IndicesFactory indicesFactory = INDICES_FACTORIES.get(body.getClass());
     if (body instanceof RectBody) {
-      return new SpriteComponent(body, new RectangleIndicesFactory(), new RectangleVerticesFactory((RectBody) body, this.height));
+      return new SpriteComponent(body, indicesFactory, new RectangleVerticesFactory((RectBody) body, this.height));
     } else if (body instanceof CircleBody) {
-      return new SpriteComponent(body, new CircleIndicesFactory(), new CircleVerticesFactory((CircleBody) body, this.height));
+      return new SpriteComponent(body, indicesFactory, new CircleVerticesFactory((CircleBody) body, this.height));
     } else {
       throw new RuntimeException("Unsupported body type " + body.getClass().getSimpleName());
     }

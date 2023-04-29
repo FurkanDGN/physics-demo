@@ -20,19 +20,19 @@ import static org.lwjgl.opengl.GL30.*;
 public class RenderBatch {
 
   private final int maxBatchSize;
-  private final Map<Class<? extends Body>, List<SpriteComponent>> spriteComponents;
   private final Matrix4f viewMatrix;
   private final Matrix4f projectionMatrix;
   private final Map<Class<?>, RenderContext> renderContexts;
+  private final Map<Class<? extends Body>, List<SpriteComponent>> spriteComponents;
 
   public RenderBatch(int maxBatchSize,
                      Matrix4f viewMatrix,
                      Matrix4f projectionMatrix) {
-    this.spriteComponents = new ConcurrentHashMap<>();
     this.maxBatchSize = maxBatchSize;
     this.viewMatrix = viewMatrix;
     this.projectionMatrix = projectionMatrix;
     this.renderContexts = new ConcurrentHashMap<>();
+    this.spriteComponents = new ConcurrentHashMap<>();
   }
 
   public void add(SpriteComponent spriteComponent) {
@@ -53,11 +53,13 @@ public class RenderBatch {
   }
 
   private void updateAndRenderSpriteComponents() {
-    this.spriteComponents.forEach((bodyClass, spriteComponentList) -> this.updateSpriteComponents(spriteComponentList, bodyClass));
+    this.spriteComponents.entrySet()
+      .parallelStream()
+      .forEach(entry -> this.updateSpriteComponents(entry.getKey(), entry.getValue()));
     this.renderSpriteComponents();
   }
 
-  private void updateSpriteComponents(List<SpriteComponent> spriteComponentList, Class<? extends Body> bodyClass) {
+  private void updateSpriteComponents(Class<? extends Body> bodyClass, List<SpriteComponent> spriteComponentList) {
     RenderContext renderContext = this.renderContexts.get(bodyClass);
 
     for (int i = 0; i < spriteComponentList.size(); i++) {
@@ -87,7 +89,7 @@ public class RenderBatch {
   }
 
   private void initSpriteComponent(SpriteComponent spriteComponent) {
-    RenderContext renderContext = this.createNewRenderContext(spriteComponent);
+    RenderContext renderContext = this.createRenderContext(spriteComponent);
 
     this.setupVertexBuffer(renderContext);
     this.setupElementBuffer(renderContext);
@@ -95,7 +97,7 @@ public class RenderBatch {
     this.unbindVertexArrayAndBuffers();
   }
 
-  private RenderContext createNewRenderContext(SpriteComponent spriteComponent) {
+  private RenderContext createRenderContext(SpriteComponent spriteComponent) {
     Class<? extends Body> bodyClass = spriteComponent.body().getClass();
     RenderContext renderContext = this.renderContexts.computeIfAbsent(bodyClass, key -> new RenderContext(bodyClass));
 
