@@ -8,9 +8,9 @@ import me.furkandgn.physicsdemo.common.body.attribute.Transform;
 import me.furkandgn.physicsdemo.common.engines.RK4PhysicEngine;
 import me.furkandgn.physicsdemo.common.gui.window.AppWindow;
 import me.furkandgn.physicsdemo.common.gui.world.World;
-import me.furkandgn.physicsdemo.opengl.camera.Camera;
+import me.furkandgn.physicsdemo.opengl.window.camera.Camera;
 import me.furkandgn.physicsdemo.opengl.window.OpenGlAppWindow;
-import me.furkandgn.physicsdemo.opengl.world.SimulationWorld;
+import me.furkandgn.physicsdemo.opengl.window.world.SimulationWorld;
 import org.joml.Vector2d;
 import org.joml.Vector2f;
 import org.joml.Vector4f;
@@ -36,7 +36,7 @@ public class OpenGLApp {
 
     AtomicLong lastput = new AtomicLong(0);
 
-    AppWindow appWindow = new OpenGlAppWindow("Physics Demo", WIDTH, HEIGHT, unused -> {
+    AppWindow appWindow = new OpenGlAppWindow("Physics Demo", WIDTH, HEIGHT, () -> {
       if (lastput.get() <= System.currentTimeMillis() - 1000L) {
         spawnBody(world, 500);
         lastput.set(System.currentTimeMillis());

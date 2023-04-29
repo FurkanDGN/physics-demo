@@ -1,4 +1,4 @@
-package me.furkandgn.physicsdemo.opengl.util;
+package me.furkandgn.physicsdemo.opengl.window.util;
 
 import me.furkandgn.physicsdemo.opengl.Constants;
 import org.lwjgl.glfw.GLFWErrorCallback;

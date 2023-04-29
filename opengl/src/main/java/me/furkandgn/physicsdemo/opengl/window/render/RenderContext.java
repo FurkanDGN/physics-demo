@@ -1,4 +1,4 @@
-package me.furkandgn.physicsdemo.opengl.render;
+package me.furkandgn.physicsdemo.opengl.window.render;
 
 import me.furkandgn.physicsdemo.common.body.Body;
 

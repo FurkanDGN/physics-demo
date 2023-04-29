@@ -1,8 +1,8 @@
-package me.furkandgn.physicsdemo.opengl.component;
+package me.furkandgn.physicsdemo.opengl.window.component;
 
 import me.furkandgn.physicsdemo.common.body.Body;
-import me.furkandgn.physicsdemo.opengl.component.factory.IndicesFactory;
-import me.furkandgn.physicsdemo.opengl.component.factory.VerticesFactory;
+import me.furkandgn.physicsdemo.opengl.window.component.factory.IndicesFactory;
+import me.furkandgn.physicsdemo.opengl.window.component.factory.VerticesFactory;
 
 /**
  * @author Furkan Doğan

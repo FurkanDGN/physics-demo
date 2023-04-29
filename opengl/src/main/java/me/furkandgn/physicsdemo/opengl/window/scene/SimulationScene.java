@@ -1,4 +1,4 @@
-package me.furkandgn.physicsdemo.opengl.scene;
+package me.furkandgn.physicsdemo.opengl.window.scene;
 
 import me.furkandgn.physicsdemo.common.gui.scene.Scene;
 import me.furkandgn.physicsdemo.common.gui.world.World;

@@ -1,4 +1,4 @@
-package me.furkandgn.physicsdemo.opengl.component.sprite;
+package me.furkandgn.physicsdemo.opengl.window.component.sprite;
 
 import me.furkandgn.physicsdemo.common.body.Body;
 import me.furkandgn.physicsdemo.common.body.CircleBody;
@@ -6,9 +6,9 @@ import me.furkandgn.physicsdemo.common.body.RectBody;
 import me.furkandgn.physicsdemo.common.body.attribute.Transform;
 import me.furkandgn.physicsdemo.common.gui.GuiConstants;
 import me.furkandgn.physicsdemo.opengl.Constants;
-import me.furkandgn.physicsdemo.opengl.component.Component;
-import me.furkandgn.physicsdemo.opengl.component.factory.IndicesFactory;
-import me.furkandgn.physicsdemo.opengl.component.factory.VerticesFactory;
+import me.furkandgn.physicsdemo.opengl.window.component.Component;
+import me.furkandgn.physicsdemo.opengl.window.component.factory.IndicesFactory;
+import me.furkandgn.physicsdemo.opengl.window.component.factory.VerticesFactory;
 import org.joml.Vector2d;
 
 /**

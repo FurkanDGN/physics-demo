@@ -1,4 +1,4 @@
-package me.furkandgn.physicsdemo.opengl.shader;
+package me.furkandgn.physicsdemo.opengl.window.shader;
 
 import org.joml.*;
 import org.lwjgl.BufferUtils;

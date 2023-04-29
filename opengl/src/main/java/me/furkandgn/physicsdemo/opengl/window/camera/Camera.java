@@ -1,4 +1,4 @@
-package me.furkandgn.physicsdemo.opengl.camera;
+package me.furkandgn.physicsdemo.opengl.window.camera;
 
 import org.joml.Matrix4f;
 import org.joml.Vector2f;

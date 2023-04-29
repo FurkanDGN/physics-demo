@@ -1,4 +1,4 @@
-package me.furkandgn.physicsdemo.opengl.component.factory;
+package me.furkandgn.physicsdemo.opengl.window.component.factory;
 
 import me.furkandgn.physicsdemo.common.body.RectBody;
 import org.joml.Vector4f;

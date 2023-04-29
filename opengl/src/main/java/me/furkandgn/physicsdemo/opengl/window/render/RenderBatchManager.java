@@ -1,7 +1,7 @@
-package me.furkandgn.physicsdemo.opengl.render;
+package me.furkandgn.physicsdemo.opengl.window.render;
 
-import me.furkandgn.physicsdemo.opengl.camera.Camera;
-import me.furkandgn.physicsdemo.opengl.component.sprite.SpriteComponent;
+import me.furkandgn.physicsdemo.opengl.window.camera.Camera;
+import me.furkandgn.physicsdemo.opengl.window.component.sprite.SpriteComponent;
 import org.joml.Matrix4f;
 
 import java.util.ArrayList;

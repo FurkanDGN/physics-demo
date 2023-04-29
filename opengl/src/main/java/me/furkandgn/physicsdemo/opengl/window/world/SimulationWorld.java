@@ -1,4 +1,4 @@
-package me.furkandgn.physicsdemo.opengl.world;
+package me.furkandgn.physicsdemo.opengl.window.world;
 
 import me.furkandgn.physicsdemo.common.PhysicEngine;
 import me.furkandgn.physicsdemo.common.body.Body;
@@ -6,13 +6,13 @@ import me.furkandgn.physicsdemo.common.body.CircleBody;
 import me.furkandgn.physicsdemo.common.body.RectBody;
 import me.furkandgn.physicsdemo.common.gui.world.AbstractWorld;
 import me.furkandgn.physicsdemo.opengl.Constants;
-import me.furkandgn.physicsdemo.opengl.camera.Camera;
-import me.furkandgn.physicsdemo.opengl.component.factory.CircleIndicesFactory;
-import me.furkandgn.physicsdemo.opengl.component.factory.CircleVerticesFactory;
-import me.furkandgn.physicsdemo.opengl.component.factory.RectangleIndicesFactory;
-import me.furkandgn.physicsdemo.opengl.component.factory.RectangleVerticesFactory;
-import me.furkandgn.physicsdemo.opengl.component.sprite.SpriteComponent;
-import me.furkandgn.physicsdemo.opengl.render.RenderBatchManager;
+import me.furkandgn.physicsdemo.opengl.window.camera.Camera;
+import me.furkandgn.physicsdemo.opengl.window.component.factory.CircleIndicesFactory;
+import me.furkandgn.physicsdemo.opengl.window.component.factory.CircleVerticesFactory;
+import me.furkandgn.physicsdemo.opengl.window.component.factory.RectangleIndicesFactory;
+import me.furkandgn.physicsdemo.opengl.window.component.factory.RectangleVerticesFactory;
+import me.furkandgn.physicsdemo.opengl.window.component.sprite.SpriteComponent;
+import me.furkandgn.physicsdemo.opengl.window.render.RenderBatchManager;
 
 import java.util.ArrayList;
 import java.util.List;

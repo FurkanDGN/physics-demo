@@ -1,4 +1,4 @@
-package me.furkandgn.physicsdemo.opengl.component.factory;
+package me.furkandgn.physicsdemo.opengl.window.component.factory;
 
 /**
  * @author Furkan Doğan
