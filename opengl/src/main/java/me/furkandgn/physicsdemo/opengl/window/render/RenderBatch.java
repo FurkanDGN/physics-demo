@@ -58,9 +58,10 @@ public class RenderBatch {
   }
 
   private void updateSpriteComponents(List<SpriteComponent> spriteComponentList, Class<? extends Body> bodyClass) {
+    RenderContext renderContext = this.renderContexts.get(bodyClass);
+
     for (int i = 0; i < spriteComponentList.size(); i++) {
       SpriteComponent spriteComponent = spriteComponentList.get(i);
-      RenderContext renderContext = this.renderContexts.get(bodyClass);
 
       if (spriteComponent.shouldDestroy()) {
         this.deleteVertices(spriteComponent, i--);
