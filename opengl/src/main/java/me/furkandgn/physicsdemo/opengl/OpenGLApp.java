@@ -38,7 +38,7 @@ public class OpenGLApp {
 
     AppWindow appWindow = new OpenGlAppWindow("Physics Demo", WIDTH, HEIGHT, () -> {
       if (lastput.get() <= System.currentTimeMillis() - 1000L) {
-        spawnBody(world, 500);
+        spawnBody(world, WIDTH / 2);
         lastput.set(System.currentTimeMillis());
       }
     });

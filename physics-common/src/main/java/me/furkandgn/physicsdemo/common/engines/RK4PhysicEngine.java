@@ -11,7 +11,7 @@ import java.util.List;
  */
 public class RK4PhysicEngine implements PhysicEngine {
 
-  private static final double GRAVITY_CONSTANT = -3.81; // m/s^2
+  private static final double GRAVITY_CONSTANT = -9.81; // m/s^2
 
   @Override
   public void evaluate(List<Body> bodies, double dt) {
