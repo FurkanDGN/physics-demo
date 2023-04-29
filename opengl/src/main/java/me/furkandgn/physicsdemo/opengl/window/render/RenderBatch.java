@@ -89,7 +89,8 @@ public class RenderBatch {
   }
 
   private void initSpriteComponent(SpriteComponent spriteComponent) {
-    RenderContext renderContext = this.createAndUpdateRenderContext(spriteComponent);
+    RenderContext renderContext = this.createRenderContext(spriteComponent);
+    this.updateVerticesAndIndices(spriteComponent, spriteComponent.body().getClass());
 
     this.setupVertexBuffer(renderContext);
     this.setupElementBuffer(renderContext);
@@ -97,13 +98,14 @@ public class RenderBatch {
     this.unbindVertexArrayAndBuffers();
   }
 
-  private RenderContext createAndUpdateRenderContext(SpriteComponent spriteComponent) {
+  private RenderContext createRenderContext(SpriteComponent spriteComponent) {
     Class<? extends Body> bodyClass = spriteComponent.body().getClass();
-    RenderContext renderContext = this.renderContexts.computeIfAbsent(bodyClass, key -> this.createRenderContext(bodyClass));
+    return this.renderContexts.computeIfAbsent(bodyClass, key -> this.createRenderContext(bodyClass));
+  }
 
+  private void updateVerticesAndIndices(SpriteComponent spriteComponent, Class<? extends Body> bodyClass) {
     this.upsertVertices(spriteComponent, this.spriteComponents.get(bodyClass).size() - 1);
     this.insertIndices(spriteComponent);
-    return renderContext;
   }
 
   private RenderContext createRenderContext(Class<? extends Body> bodyClass) {
