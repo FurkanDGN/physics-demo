@@ -16,7 +16,7 @@ import org.joml.Vector2d;
  */
 public class SpriteComponent extends Component {
 
-  private volatile boolean dirty = true;
+  private volatile boolean dirty;
   private volatile boolean shouldDestroy = false;
 
   public SpriteComponent(Body body,
