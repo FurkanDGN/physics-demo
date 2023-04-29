@@ -39,6 +39,8 @@ public class OpenGlAppWindow implements AppWindow {
   private long window;
   private long beginTime;
   private long dt = -1;
+  private long firstRender = 0;
+  private short frameCount = 0;
 
   public OpenGlAppWindow(String title,
                          int width,
@@ -72,11 +74,11 @@ public class OpenGlAppWindow implements AppWindow {
 
   private void loop() {
     glfwPollEvents();
+    glClearColor(RED, GREEN, BLUE, 1f);
+    if (this.beginTime == 0) {
+      this.beginTime = System.nanoTime();
+    }
     while (!glfwWindowShouldClose(this.window)) {
-      glClearColor(RED, GREEN, BLUE, 1f);
-      if (this.beginTime == 0) {
-        this.beginTime = System.nanoTime();
-      }
       this.preLoop();
       this.update();
       this.postLoop();
@@ -87,6 +89,7 @@ public class OpenGlAppWindow implements AppWindow {
     this.scene.tick(this.dt / SECOND_TO_NANO);
     this.tickListener.onTick();
     this.scene.render(this.dt / SECOND_TO_NANO);
+    this.countFrame();
   }
 
   private void preLoop() {
@@ -97,16 +100,12 @@ public class OpenGlAppWindow implements AppWindow {
   private void postLoop() {
     glfwSwapBuffers(this.window);
     this.updateTime();
-    if (SECOND_TO_NANO / FPS_LIMIT > this.dt) {
-      double sleepTime = (SECOND_TO_NANO / FPS_LIMIT) - this.dt;
+    double framePerTime = SECOND_TO_NANO / FPS_LIMIT;
+    if (framePerTime > this.dt) {
+      double sleepTime = framePerTime - this.dt;
       LockSupport.parkNanos((long) sleepTime - 500000);
       this.updateTime();
     }
-  }
-
-  private void updateTime() {
-    this.dt = TimeUtil.deltaTime(this.beginTime);
-    this.beginTime = TimeUtil.getTime();
   }
 
   private void showWindow() {
@@ -119,5 +118,22 @@ public class OpenGlAppWindow implements AppWindow {
 
     glfwTerminate();
     Objects.requireNonNull(glfwSetErrorCallback(null)).free();
+  }
+
+  private void updateTime() {
+    this.dt = TimeUtil.deltaTime(this.beginTime);
+    this.beginTime = TimeUtil.getTime();
+  }
+
+  private void countFrame() {
+    if (this.firstRender == 0) {
+      this.firstRender = System.currentTimeMillis();
+    } else if (this.firstRender <= System.currentTimeMillis() - 1000) {
+      System.out.println("FPS: " + this.frameCount);
+      this.firstRender = System.currentTimeMillis();
+      this.frameCount = 0;
+    }
+
+    this.frameCount++;
   }
 }

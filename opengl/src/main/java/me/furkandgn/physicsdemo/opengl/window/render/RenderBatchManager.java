@@ -30,6 +30,12 @@ public class RenderBatchManager {
     renderBatch.add(spriteComponent);
   }
 
+  public void update() {
+    for (RenderBatch batch : this.renderBatches) {
+      batch.update();
+    }
+  }
+
   public void render() {
     for (RenderBatch batch : this.renderBatches) {
       batch.render();

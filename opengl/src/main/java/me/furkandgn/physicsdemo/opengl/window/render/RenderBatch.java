@@ -41,8 +41,12 @@ public class RenderBatch {
     this.initSpriteComponent(spriteComponent);
   }
 
+  public void update() {
+    this.spriteComponents.forEach(this::updateSpriteComponents);
+  }
+
   public void render() {
-    this.updateAndRenderSpriteComponents();
+    this.renderSpriteComponents();
   }
 
   public boolean hasRoom() {
@@ -50,11 +54,6 @@ public class RenderBatch {
       .stream()
       .mapToInt(List::size)
       .sum() < this.maxBatchSize;
-  }
-
-  private void updateAndRenderSpriteComponents() {
-    this.spriteComponents.forEach(this::updateSpriteComponents);
-    this.renderSpriteComponents();
   }
 
   private void updateSpriteComponents(Class<? extends Body> bodyClass, List<SpriteComponent> spriteComponentList) {

@@ -40,7 +40,6 @@ public class SimulationWorld extends AbstractWorld {
   @Override
   public void addBody(Body body) {
     super.addBody(body);
-
     SpriteComponent spriteComponent = this.buildSpriteComponent(body);
     spriteComponent.init();
     this.renderBatchManager.add(spriteComponent);
@@ -57,6 +56,7 @@ public class SimulationWorld extends AbstractWorld {
       }
     }
     super.tick(dt);
+    this.renderBatchManager.update();
   }
 
   @Override

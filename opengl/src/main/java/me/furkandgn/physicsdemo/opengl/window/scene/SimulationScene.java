@@ -10,9 +10,6 @@ public class SimulationScene implements Scene {
 
   private final World world;
 
-  private long firstRender = 0;
-  private short frameCount = 0;
-
   public SimulationScene(World world) {
     this.world = world;
   }
@@ -26,16 +23,7 @@ public class SimulationScene implements Scene {
 
   @Override
   public void render(double dt) {
-    if (this.firstRender == 0) {
-      this.firstRender = System.currentTimeMillis();
-    } else if (this.firstRender <= System.currentTimeMillis() - 1000) {
-      System.out.println("FPS: " + this.frameCount);
-      this.firstRender = System.currentTimeMillis();
-      this.frameCount = 0;
-    }
-
     this.world.render();
-    this.frameCount++;
   }
 
   @Override
