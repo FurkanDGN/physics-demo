@@ -42,7 +42,7 @@ public class RenderBatch {
   }
 
   public void render() {
-    this.updateAndRender();
+    this.updateAndRenderSpriteComponents();
   }
 
   public boolean hasRoom() {
@@ -52,11 +52,8 @@ public class RenderBatch {
       .sum() < this.maxBatchSize;
   }
 
-  private void updateAndRender() {
-    for (Class<? extends Body> clazz : this.spriteComponents.keySet()) {
-      List<SpriteComponent> spriteComponentList = this.spriteComponents.get(clazz);
-      this.updateSpriteComponents(spriteComponentList, clazz);
-    }
+  private void updateAndRenderSpriteComponents() {
+    this.spriteComponents.forEach((bodyClass, spriteComponentList) -> this.updateSpriteComponents(spriteComponentList, bodyClass));
     this.renderSpriteComponents();
   }
 
@@ -77,16 +74,15 @@ public class RenderBatch {
   }
 
   private void renderSpriteComponents() {
-    for (RenderContext renderContext : this.renderContexts.values()) {
+    this.renderContexts.values().forEach(renderContext -> {
       if (renderContext.refreshBufferData()) {
         this.refreshBuffer(renderContext);
       }
 
       Class<? extends Body> bodyClass = renderContext.clazz();
       int count = this.spriteComponents.get(bodyClass).size();
-
       RenderUtil.render(bodyClass, renderContext, this.viewMatrix, this.projectionMatrix, count);
-    }
+    });
   }
 
   private void initSpriteComponent(SpriteComponent spriteComponent) {
@@ -96,23 +92,16 @@ public class RenderBatch {
     this.setupElementBuffer(renderContext);
     this.setupVertexArray(renderContext);
     this.unbindVertexArrayAndBuffers();
-
-    this.fillVerticesAndIndices(spriteComponent);
   }
 
   private RenderContext createNewRenderContext(SpriteComponent spriteComponent) {
     Class<? extends Body> bodyClass = spriteComponent.body().getClass();
     RenderContext renderContext = this.renderContexts.computeIfAbsent(bodyClass, key -> new RenderContext(bodyClass));
+
     this.assignIds(renderContext);
     this.upsertVertices(spriteComponent, this.spriteComponents.get(bodyClass).size() - 1);
     this.insertIndices(spriteComponent);
     return renderContext;
-  }
-
-  private void fillVerticesAndIndices(SpriteComponent spriteComponent) {
-    Class<? extends Body> key = spriteComponent.body().getClass();
-    this.upsertVertices(spriteComponent, this.spriteComponents.get(key).size() - 1);
-    this.insertIndices(spriteComponent);
   }
 
   private void assignIds(RenderContext renderContext) {
@@ -120,8 +109,8 @@ public class RenderBatch {
     int vboID = glGenBuffers();
     int eboID = glGenBuffers();
 
-    renderContext.vboId(vboID);
     renderContext.vaoId(vaoID);
+    renderContext.vboId(vboID);
     renderContext.eboId(eboID);
   }
 
@@ -131,9 +120,7 @@ public class RenderBatch {
     int cornerCount = spriteComponent.cornerCount();
 
     float[] vertices = renderContext.vertices() != null ? renderContext.vertices() : new float[this.maxBatchSize * cornerCount * VERTEX_SIZE];
-
     spriteComponent.verticesFactory().createVertices(vertices, index);
-
     renderContext.vertices(vertices);
   }
 
@@ -144,20 +131,6 @@ public class RenderBatch {
 
     int[] indices = spriteComponent.indicesFactory().createIndices(this.maxBatchSize, count);
     renderContext.indices(indices);
-  }
-
-  private void deleteVertices(SpriteComponent spriteComponent, int index) {
-    Class<? extends Body> key = spriteComponent.body().getClass();
-    RenderContext renderContext = this.renderContexts.get(key);
-    float[] vertices = renderContext.vertices();
-    int cornerCount = spriteComponent.cornerCount();
-
-    int fromIndex = index * cornerCount * VERTEX_SIZE;
-    int toIndex = index * cornerCount * VERTEX_SIZE + (VERTEX_SIZE * cornerCount);
-    Arrays.fill(vertices, fromIndex, toIndex, 0);
-    System.arraycopy(vertices, toIndex, vertices, fromIndex, vertices.length - toIndex);
-
-    renderContext.vertices(vertices);
   }
 
   private void setupVertexBuffer(RenderContext renderContext) {
@@ -187,6 +160,20 @@ public class RenderBatch {
     glBindVertexArray(0);
     glBindBuffer(GL_ARRAY_BUFFER, -1);
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, -1);
+  }
+
+  private void deleteVertices(SpriteComponent spriteComponent, int index) {
+    Class<? extends Body> key = spriteComponent.body().getClass();
+    RenderContext renderContext = this.renderContexts.get(key);
+    float[] vertices = renderContext.vertices();
+    int cornerCount = spriteComponent.cornerCount();
+
+    int fromIndex = index * cornerCount * VERTEX_SIZE;
+    int toIndex = index * cornerCount * VERTEX_SIZE + (VERTEX_SIZE * cornerCount);
+    Arrays.fill(vertices, fromIndex, toIndex, 0);
+    System.arraycopy(vertices, toIndex, vertices, fromIndex, vertices.length - toIndex);
+
+    renderContext.vertices(vertices);
   }
 
   private void refreshBuffer(RenderContext renderContext) {
