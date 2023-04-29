@@ -5,7 +5,7 @@
   <modelVersion>4.0.0</modelVersion>
 
   <groupId>me.furkandgn</groupId>
-  <artifactId>PhysicDemo</artifactId>
+  <artifactId>physics-demo</artifactId>
   <version>1.0.0</version>
   <packaging>pom</packaging>
   <modules>
@@ -14,8 +14,6 @@
   </modules>
 
   <properties>
-    <lwjgl.version>3.3.1</lwjgl.version>
-    <lwjgl.natives>natives-macos</lwjgl.natives>
     <maven.compiler.source>17</maven.compiler.source>
     <maven.compiler.target>17</maven.compiler.target>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -31,14 +29,6 @@
 
   <dependencyManagement>
     <dependencies>
-      <dependency>
-        <groupId>org.lwjgl</groupId>
-        <artifactId>lwjgl-bom</artifactId>
-        <version>${lwjgl.version}</version>
-        <scope>import</scope>
-        <type>pom</type>
-      </dependency>
-
       <dependency>
         <groupId>me.furkandgn</groupId>
         <artifactId>physics-common</artifactId>
