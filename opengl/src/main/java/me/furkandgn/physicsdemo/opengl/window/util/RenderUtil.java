@@ -3,6 +3,7 @@ package me.furkandgn.physicsdemo.opengl.window.util;
 import me.furkandgn.physicsdemo.common.body.Body;
 import me.furkandgn.physicsdemo.common.body.shapes.CircleBody;
 import me.furkandgn.physicsdemo.common.body.shapes.RectBody;
+import me.furkandgn.physicsdemo.common.body.surfaces.FlatSurfaceBody;
 import me.furkandgn.physicsdemo.opengl.window.render.RenderContext;
 import me.furkandgn.physicsdemo.opengl.window.shader.Shader;
 import org.joml.Matrix4f;
@@ -35,7 +36,7 @@ public class RenderUtil {
     glEnable(GL_MULTISAMPLE);
     if (clazz.isAssignableFrom(CircleBody.class)) {
       renderCircle(renderContext, count);
-    } else if (clazz.isAssignableFrom(RectBody.class)) {
+    } else if (clazz.isAssignableFrom(RectBody.class) || clazz.isAssignableFrom(FlatSurfaceBody.class)) {
       renderRect(renderContext, count);
     } else {
       throw new RuntimeException("Unsupported body type " + clazz.getSimpleName());
