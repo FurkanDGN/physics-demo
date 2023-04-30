@@ -120,10 +120,10 @@ public class RenderBatch {
     Class<? extends Body> key = component.body().getClass();
     RenderContext renderContext = this.renderContexts.get(key);
     float[] vertices = renderContext.vertices();
-    int cornerCount = component.dotCount();
+    int dotCount = component.dotCount();
 
-    int fromIndex = index * cornerCount * VERTEX_SIZE;
-    int toIndex = index * cornerCount * VERTEX_SIZE + (VERTEX_SIZE * cornerCount);
+    int fromIndex = index * dotCount * VERTEX_SIZE;
+    int toIndex = index * dotCount * VERTEX_SIZE + (VERTEX_SIZE * dotCount);
     Arrays.fill(vertices, fromIndex, toIndex, 0);
     System.arraycopy(vertices, toIndex, vertices, fromIndex, vertices.length - toIndex);
 
