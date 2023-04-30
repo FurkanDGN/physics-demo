@@ -33,9 +33,9 @@ public class DefaultRenderContextFactory implements RenderContextFactory {
     this.assignIds(renderContext);
     this.upsertVertices(component, renderContext, index);
     this.insertIndices(component, renderContext);
+    this.setupVertexArray(renderContext);
     this.setupVertexBuffer(renderContext);
     this.setupElementBuffer(renderContext);
-    this.setupVertexArray(renderContext);
     this.unbindVertexArrayAndBuffers();
 
     return renderContext;
@@ -76,17 +76,17 @@ public class DefaultRenderContextFactory implements RenderContextFactory {
 
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, eboID);
     glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices, GL_STATIC_DRAW);
+
+    glVertexAttribPointer(0, POS_SIZE, GL_FLOAT, false, VERTEX_SIZE_BYTES, POS_OFFSET);
+    glVertexAttribPointer(1, COLOR_SIZE, GL_FLOAT, false, VERTEX_SIZE_BYTES, COLOR_OFFSET);
   }
 
   private void setupVertexArray(RenderContext renderContext) {
     int vaoID = renderContext.vaoId();
     glBindVertexArray(vaoID);
-    glVertexAttribPointer(0, POS_SIZE, GL_FLOAT, false, VERTEX_SIZE_BYTES, POS_OFFSET);
-    glVertexAttribPointer(1, COLOR_SIZE, GL_FLOAT, false, VERTEX_SIZE_BYTES, COLOR_OFFSET);
   }
 
   private void unbindVertexArrayAndBuffers() {
-    glBindVertexArray(0);
     glBindBuffer(GL_ARRAY_BUFFER, -1);
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, -1);
   }
