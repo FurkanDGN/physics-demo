@@ -16,6 +16,7 @@ import java.util.concurrent.locks.LockSupport;
 
 import static me.furkandgn.physicsdemo.common.util.TimeUtil.SECOND_TO_NANO;
 import static me.furkandgn.physicsdemo.opengl.Constants.FPS_LIMIT;
+import static me.furkandgn.physicsdemo.opengl.Constants.FPS_TIME_OFFSET;
 import static org.lwjgl.glfw.GLFW.*;
 import static org.lwjgl.opengl.GL46.*;
 
@@ -110,9 +111,10 @@ public class OpenGlAppWindow implements AppWindow {
     if (framePerTime > this.dt) {
       long sleepTime = framePerTime - this.dt;
       long targetTime = currentTime + sleepTime;
+      int offset = FPS_TIME_OFFSET * FPS_LIMIT;
 
       while (System.nanoTime() < targetTime) {
-        LockSupport.parkNanos(targetTime - System.nanoTime());
+        LockSupport.parkNanos(targetTime - System.nanoTime() - offset);
       }
 
       this.updateTime();

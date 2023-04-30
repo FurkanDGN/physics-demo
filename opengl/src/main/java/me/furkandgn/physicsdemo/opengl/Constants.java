@@ -6,6 +6,7 @@ package me.furkandgn.physicsdemo.opengl;
 public class Constants {
 
   public static final int FPS_LIMIT = 60;
+  public static final int FPS_TIME_OFFSET = 7500;
 
   public static final int SAMPLING = 4;
 
