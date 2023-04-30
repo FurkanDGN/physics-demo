@@ -2,8 +2,8 @@ package me.furkandgn.physicsdemo.opengl;
 
 import me.furkandgn.physicsdemo.common.PhysicEngine;
 import me.furkandgn.physicsdemo.common.body.Body;
-import me.furkandgn.physicsdemo.common.body.CircleBody;
-import me.furkandgn.physicsdemo.common.body.RectBody;
+import me.furkandgn.physicsdemo.common.body.shapes.CircleBody;
+import me.furkandgn.physicsdemo.common.body.shapes.RectBody;
 import me.furkandgn.physicsdemo.common.body.attribute.Transform;
 import me.furkandgn.physicsdemo.common.engines.RK4PhysicEngine;
 import me.furkandgn.physicsdemo.common.gui.window.AppWindow;
