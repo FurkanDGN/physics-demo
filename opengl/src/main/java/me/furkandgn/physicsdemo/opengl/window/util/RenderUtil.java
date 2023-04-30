@@ -3,14 +3,13 @@ package me.furkandgn.physicsdemo.opengl.window.util;
 import me.furkandgn.physicsdemo.common.body.Body;
 import me.furkandgn.physicsdemo.common.body.shapes.CircleBody;
 import me.furkandgn.physicsdemo.common.body.shapes.RectBody;
-import me.furkandgn.physicsdemo.common.body.surfaces.FlatSurfaceBody;
 import me.furkandgn.physicsdemo.opengl.window.render.RenderContext;
 import me.furkandgn.physicsdemo.opengl.window.shader.Shader;
 import org.joml.Matrix4f;
+import org.lwjgl.PointerBuffer;
 
 import static me.furkandgn.physicsdemo.opengl.window.constants.Shapes.CIRCLE;
 import static org.lwjgl.opengl.GL11.*;
-import static org.lwjgl.opengl.GL14.glMultiDrawArrays;
 import static org.lwjgl.opengl.GL15.*;
 import static org.lwjgl.opengl.GL20.glDisableVertexAttribArray;
 import static org.lwjgl.opengl.GL20.glEnableVertexAttribArray;
@@ -34,9 +33,9 @@ public class RenderUtil {
     shader.uploadMat4f("uProjection", projectionMatrix);
     shader.uploadMat4f("uView", viewMatrix);
     glEnable(GL_MULTISAMPLE);
-    if (clazz.isAssignableFrom(CircleBody.class)) {
+    if (clazz.isAssignableFrom(CircleBody.class) || clazz.getSuperclass().isAssignableFrom(CircleBody.class)) {
       renderCircle(renderContext, count);
-    } else if (clazz.isAssignableFrom(RectBody.class) || clazz.isAssignableFrom(FlatSurfaceBody.class)) {
+    } else if (clazz.isAssignableFrom(RectBody.class) || clazz.getSuperclass().isAssignableFrom(RectBody.class)) {
       renderRect(renderContext, count);
     } else {
       throw new RuntimeException("Unsupported body type " + clazz.getSimpleName());
@@ -53,15 +52,10 @@ public class RenderUtil {
     glEnableVertexAttribArray(0);
     glEnableVertexAttribArray(1);
 
-    int[] first = new int[count];
-    int[] counts = new int[count];
-    int circleDotCount = CIRCLE.getDotCount();
     for (int i = 0; i < count; i++) {
-      first[i] = i * circleDotCount;
-      counts[i] = circleDotCount;
+      long offset = (long) CIRCLE.getDotCount() * i * Integer.BYTES;
+      glDrawElements(GL_TRIANGLE_FAN, CIRCLE.getDotCount(), GL_UNSIGNED_INT, offset);
     }
-
-    glMultiDrawArrays(GL_TRIANGLE_FAN, first, counts);
 
     glDisableVertexAttribArray(0);
     glDisableVertexAttribArray(1);
@@ -76,7 +70,7 @@ public class RenderUtil {
     glEnableVertexAttribArray(0);
     glEnableVertexAttribArray(1);
 
-    glDrawElements(GL_TRIANGLES, count * 6, GL_UNSIGNED_INT, 0);
+    glMultiDrawElements(GL_TRIANGLES, new int[]{6 * count}, GL_UNSIGNED_INT, PointerBuffer.allocateDirect(count * Long.BYTES));
 
     glDisableVertexAttribArray(0);
     glDisableVertexAttribArray(1);

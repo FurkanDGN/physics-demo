@@ -10,11 +10,10 @@ public class FlatSurfaceBody extends RectBody {
 
   public FlatSurfaceBody(int width,
                          int height,
-                         float mass,
                          int x,
                          int y,
                          Vector4f color) {
-    super(width, height, mass, x, y, color);
+    super(width, height, 0, x, y, color);
   }
 
   @Override

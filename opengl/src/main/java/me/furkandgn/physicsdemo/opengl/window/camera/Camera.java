@@ -23,7 +23,7 @@ public class Camera {
 
   public void adjustProjection() {
     this.projectionMatrix.identity();
-    this.projectionMatrix.ortho(0, WIDTH * 2, HEIGHT * 2, 0, 0.0f, 1.0f);
+    this.projectionMatrix.ortho(0, WIDTH, HEIGHT, 0, 0.0f, 1.0f);
   }
 
   public Matrix4f viewMatrix() {

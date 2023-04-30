@@ -34,9 +34,9 @@ public class RectangleVerticesFactory implements VerticesFactory {
     float yAdd = 0.0f;
     for (int i = 0; i < 4; i++) {
       if (i == 1) {
-        yAdd = 2.0f;
+        yAdd = 1.0f;
       } else if (i == 2) {
-        xAdd = 2.0f;
+        xAdd = 1.0f;
       } else if (i == 3) {
         yAdd = 0.0f;
       }
@@ -47,8 +47,8 @@ public class RectangleVerticesFactory implements VerticesFactory {
         0, 1);
 
       // Load position
-      vertices[offset] = currentPos.x;
-      vertices[offset + 1] = this.windowHeight + (this.body.height() * 2) - currentPos.y;
+      vertices[offset] = (int) (currentPos.x - this.body.width() / 2);
+      vertices[offset + 1] = (int) (this.windowHeight + (this.body.height() / 2) - currentPos.y);
 
       // Load color
       vertices[offset + 2] = color.x;

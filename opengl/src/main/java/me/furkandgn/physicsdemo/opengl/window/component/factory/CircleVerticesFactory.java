@@ -49,7 +49,7 @@ public class CircleVerticesFactory implements VerticesFactory {
 
   private void setVertex(float[] vertices, int offset, int radius, Vector2d position, Vector4f color) {
     vertices[offset] = (float) position.x;
-    vertices[offset + 1] = (float) (this.windowHeight + this.body.radius() - position.y);
+    vertices[offset + 1] = (float) (this.windowHeight + this.body.radius() - position.y) - radius;
 
     vertices[offset + 2] = color.x;
     vertices[offset + 3] = color.y;

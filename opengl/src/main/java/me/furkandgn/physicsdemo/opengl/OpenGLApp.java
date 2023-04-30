@@ -19,7 +19,7 @@ import static me.furkandgn.physicsdemo.common.gui.GuiConstants.WIDTH;
 public class OpenGLApp {
 
   public static void main(String[] args) {
-    Camera camera = new Camera(new Vector2f(-WIDTH / 2f, -HEIGHT));
+    Camera camera = new Camera(new Vector2f(0, 0));
 
     PhysicEngine physicEngine = new RK4PhysicEngine();
     World world = new SimulationWorld(physicEngine, camera, HEIGHT);

@@ -13,8 +13,9 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
 
-import static me.furkandgn.physicsdemo.opengl.Constants.VERTEX_SIZE;
+import static me.furkandgn.physicsdemo.opengl.Constants.*;
 import static org.lwjgl.opengl.GL30.*;
+import static org.lwjgl.opengl.GL30.glBindVertexArray;
 
 /**
  * @author Furkan Doğan
@@ -36,7 +37,7 @@ public class RenderBatch {
     this.projectionMatrix = projectionMatrix;
     this.renderContexts = new ConcurrentHashMap<>();
     this.components = new ConcurrentHashMap<>();
-    this.renderContextFactory = new DefaultRenderContextFactory(this::createVerticesArray, this::createIndicesArray);
+    this.renderContextFactory = new DefaultRenderContextFactory();
   }
 
   public void add(Component component) {
@@ -65,7 +66,7 @@ public class RenderBatch {
 
     for (int i = 0; i < components.size(); i++) {
       Component component = components.get(i);
-      this.updateComponent(component, renderContext, i);
+      this.checkUpdateComponent(component, renderContext, i);
       this.checkShouldDelete(components, component, i);
     }
   }
@@ -77,9 +78,9 @@ public class RenderBatch {
     }
   }
 
-  private void updateComponent(Component component, RenderContext renderContext, int i) {
+  private void checkUpdateComponent(Component component, RenderContext renderContext, int i) {
     if (component.shouldUpdate()) {
-      this.updateVertices(component, i);
+      this.upsertVertices(component, renderContext, i);
       renderContext.refreshBufferData(true);
     }
   }
@@ -99,21 +100,27 @@ public class RenderBatch {
   private void initComponent(Component component) {
     Class<? extends Body> bodyClass = component.body().getClass();
     int index = this.components.get(bodyClass).size() - 1;
-    this.createRenderContext(component, index);
+    RenderContext renderContext = this.createRenderContext(component, index);
+    this.updateRenderContext(component, renderContext, index);
   }
 
-  private void createRenderContext(Component component, int index) {
+  private RenderContext createRenderContext(Component component, int index) {
     Class<? extends Body> bodyClass = component.body().getClass();
-    this.renderContexts.computeIfAbsent(bodyClass, key -> this.renderContextFactory.createRenderContext(component, index));
+    return this.renderContexts.computeIfAbsent(bodyClass, key -> this.renderContextFactory.createRenderContext(component, index));
   }
 
-  private void updateVertices(Component component, int index) {
-    Class<? extends Body> key = component.body().getClass();
-    RenderContext renderContext = this.renderContexts.get(key);
+  private void updateRenderContext(Component component, RenderContext renderContext, int index) {
+    this.upsertVertices(component, renderContext, index);
+    this.insertIndices(component, renderContext);
+    this.setupGl(renderContext);
+  }
 
-    float[] vertices = renderContext.vertices();
-    component.verticesFactory().createVertices(vertices, index);
-    renderContext.vertices(vertices);
+  private void setupGl(RenderContext renderContext) {
+    this.setupVertexArray(renderContext);
+    this.setupVertexBuffer(renderContext);
+    this.setupElementBuffer(renderContext);
+    this.refreshBuffer(renderContext);
+    this.unbindVertexArrayAndBuffers();
   }
 
   private void deleteVertices(Component component, int index) {
@@ -135,6 +142,47 @@ public class RenderBatch {
     float[] vertices = renderContext.vertices();
     glBufferSubData(GL_ARRAY_BUFFER, 0, vertices);
     renderContext.refreshBufferData(false);
+  }
+
+  private void upsertVertices(Component component, RenderContext renderContext, int index) {
+    float[] vertices = renderContext.vertices() != null ? renderContext.vertices() : this.createVerticesArray(component);
+    component.verticesFactory().createVertices(vertices, index);
+    renderContext.vertices(vertices);
+  }
+
+  private void insertIndices(Component component, RenderContext renderContext) {
+    int[] indices = this.createIndicesArray(component);
+    renderContext.indices(indices);
+  }
+
+  private void setupVertexBuffer(RenderContext renderContext) {
+    int vboID = renderContext.vboId();
+    float[] vertices = renderContext.vertices();
+
+    glBindBuffer(GL_ARRAY_BUFFER, vboID);
+    glBufferData(GL_ARRAY_BUFFER, (long) vertices.length * Float.BYTES, GL_DYNAMIC_DRAW);
+  }
+
+  private void setupElementBuffer(RenderContext renderContext) {
+    int eboID = renderContext.eboId();
+    int[] indices = renderContext.indices();
+
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, eboID);
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices, GL_STATIC_DRAW);
+
+    glVertexAttribPointer(0, POS_SIZE, GL_FLOAT, false, VERTEX_SIZE_BYTES, POS_OFFSET);
+    glVertexAttribPointer(1, COLOR_SIZE, GL_FLOAT, false, VERTEX_SIZE_BYTES, COLOR_OFFSET);
+  }
+
+  private void setupVertexArray(RenderContext renderContext) {
+    int vaoID = renderContext.vaoId();
+    glBindVertexArray(vaoID);
+  }
+
+  private void unbindVertexArrayAndBuffers() {
+    glBindVertexArray(0);
+    glBindBuffer(GL_ARRAY_BUFFER, 0);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
   }
 
   private int[] createIndicesArray(Component component) {

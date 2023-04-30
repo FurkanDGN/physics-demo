@@ -25,7 +25,7 @@ public class CircleIndicesFactory implements IndicesFactory {
 
     for (int i = pointOffset; i < dotCount * (index + 1); i += dotCount) {
       for (int j = 0; j < dotCount; j++) {
-        elements[i] = i % dotCount;
+        elements[i + j] = i + j;
       }
     }
   }
