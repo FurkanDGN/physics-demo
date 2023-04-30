@@ -1,6 +1,6 @@
 package me.furkandgn.physicsdemo.opengl.window.component.factory;
 
-import me.furkandgn.physicsdemo.common.body.CircleBody;
+import me.furkandgn.physicsdemo.common.body.shapes.CircleBody;
 import org.joml.Vector2d;
 import org.joml.Vector4f;
 

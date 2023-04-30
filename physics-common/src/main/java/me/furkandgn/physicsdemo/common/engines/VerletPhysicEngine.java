@@ -2,7 +2,7 @@ package me.furkandgn.physicsdemo.common.engines;
 
 import me.furkandgn.physicsdemo.common.PhysicEngine;
 import me.furkandgn.physicsdemo.common.body.Body;
-import me.furkandgn.physicsdemo.common.body.CircleBody;
+import me.furkandgn.physicsdemo.common.body.shapes.CircleBody;
 import me.furkandgn.physicsdemo.common.collision.CollisionDetector;
 import me.furkandgn.physicsdemo.common.collision.swp.CollisionEvent;
 import me.furkandgn.physicsdemo.common.collision.swp.EventDrivenSweepAndPrune;

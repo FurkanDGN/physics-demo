@@ -1,8 +1,8 @@
 package me.furkandgn.physicsdemo.opengl.window.component.sprite;
 
 import me.furkandgn.physicsdemo.common.body.Body;
-import me.furkandgn.physicsdemo.common.body.CircleBody;
-import me.furkandgn.physicsdemo.common.body.RectBody;
+import me.furkandgn.physicsdemo.common.body.shapes.CircleBody;
+import me.furkandgn.physicsdemo.common.body.shapes.RectBody;
 import me.furkandgn.physicsdemo.common.body.attribute.Transform;
 import me.furkandgn.physicsdemo.common.gui.GuiConstants;
 import me.furkandgn.physicsdemo.opengl.Constants;

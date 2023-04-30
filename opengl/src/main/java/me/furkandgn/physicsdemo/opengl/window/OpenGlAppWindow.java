@@ -100,10 +100,21 @@ public class OpenGlAppWindow implements AppWindow {
   private void postLoop() {
     glfwSwapBuffers(this.window);
     this.updateTime();
-    double framePerTime = SECOND_TO_NANO / FPS_LIMIT;
+    this.limitFrameRate();
+  }
+
+  private void limitFrameRate() {
+    long framePerTime = Math.round(SECOND_TO_NANO / FPS_LIMIT);
+    long currentTime = System.nanoTime();
+
     if (framePerTime > this.dt) {
-      double sleepTime = framePerTime - this.dt;
-      LockSupport.parkNanos((long) sleepTime - 500000);
+      long sleepTime = framePerTime - this.dt;
+      long targetTime = currentTime + sleepTime;
+
+      while (System.nanoTime() < targetTime) {
+        LockSupport.parkNanos(targetTime - System.nanoTime());
+      }
+
       this.updateTime();
     }
   }
