@@ -56,8 +56,8 @@ public class RenderUtil {
     int[] counts = new int[count];
     int circleDotCount = CIRCLE.getDotCount();
     for (int i = 0; i < count; i++) {
-      first[i] = i * (circleDotCount + 2);
-      counts[i] = circleDotCount + 2;
+      first[i] = i * circleDotCount;
+      counts[i] = circleDotCount;
     }
 
     glMultiDrawArrays(GL_TRIANGLE_FAN, first, counts);

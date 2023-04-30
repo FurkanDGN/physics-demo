@@ -21,11 +21,11 @@ public class CircleIndicesFactory implements IndicesFactory {
 
   private void loadElementIndices(int[] elements, int index) {
     int dotCount = Shapes.CIRCLE.getDotCount();
-    int pointOffset = (dotCount) * index;
+    int pointOffset = dotCount * index;
 
     for (int i = pointOffset; i < dotCount * (index + 1); i += dotCount) {
       for (int j = 0; j < dotCount; j++) {
-        elements[i] = i % (dotCount);
+        elements[i] = i % dotCount;
       }
     }
   }
