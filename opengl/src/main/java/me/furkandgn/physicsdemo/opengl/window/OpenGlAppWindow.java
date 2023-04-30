@@ -4,7 +4,7 @@ import me.furkandgn.physicsdemo.common.gui.scene.Scene;
 import me.furkandgn.physicsdemo.common.gui.window.AppWindow;
 import me.furkandgn.physicsdemo.common.gui.world.World;
 import me.furkandgn.physicsdemo.common.util.TimeUtil;
-import me.furkandgn.physicsdemo.opengl.window.listener.TickListener;
+import me.furkandgn.physicsdemo.opengl.window.listener.AppListener;
 import me.furkandgn.physicsdemo.opengl.window.scene.SimulationScene;
 import me.furkandgn.physicsdemo.opengl.window.shader.Shader;
 import me.furkandgn.physicsdemo.opengl.window.util.OpenGlUtil;
@@ -34,7 +34,7 @@ public class OpenGlAppWindow implements AppWindow {
   private final int width;
   private final int height;
   private final String title;
-  private final TickListener tickListener;
+  private final AppListener appListener;
 
   private Scene scene;
   private long window;
@@ -46,17 +46,18 @@ public class OpenGlAppWindow implements AppWindow {
   public OpenGlAppWindow(String title,
                          int width,
                          int height,
-                         TickListener tickListener) {
+                         AppListener appListener) {
     this.title = title;
     this.width = width;
     this.height = height;
-    this.tickListener = tickListener;
+    this.appListener = appListener;
   }
 
   @Override
   public void init(World world) {
     this.scene = new SimulationScene(world);
     this.initOpenGl();
+    this.appListener.onInit();
     this.startLoop();
   }
 
@@ -88,7 +89,7 @@ public class OpenGlAppWindow implements AppWindow {
 
   private void update() {
     this.scene.tick(this.dt / SECOND_TO_NANO);
-    this.tickListener.onTick();
+    this.appListener.onTick();
     this.scene.render(this.dt / SECOND_TO_NANO);
     this.countFrame();
   }
@@ -128,6 +129,7 @@ public class OpenGlAppWindow implements AppWindow {
   private void destroyWindow() {
     Callbacks.glfwFreeCallbacks(this.window);
     glfwDestroyWindow(this.window);
+    this.appListener.onClose();
 
     glfwTerminate();
     Objects.requireNonNull(glfwSetErrorCallback(null)).free();

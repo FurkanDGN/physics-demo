@@ -4,6 +4,7 @@ import me.furkandgn.physicsdemo.common.PhysicEngine;
 import me.furkandgn.physicsdemo.common.body.Body;
 import me.furkandgn.physicsdemo.common.body.shapes.CircleBody;
 import me.furkandgn.physicsdemo.common.body.shapes.RectBody;
+import me.furkandgn.physicsdemo.common.body.surfaces.FlatSurfaceBody;
 import me.furkandgn.physicsdemo.common.gui.world.AbstractWorld;
 import me.furkandgn.physicsdemo.opengl.Constants;
 import me.furkandgn.physicsdemo.opengl.window.camera.Camera;
@@ -23,6 +24,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
 public class SimulationWorld extends AbstractWorld {
 
   private static final Map<Class<? extends Body>, IndicesFactory> INDICES_FACTORIES = Map.of(
+    FlatSurfaceBody.class, new RectangleIndicesFactory(),
     RectBody.class, new RectangleIndicesFactory(),
     CircleBody.class, new CircleIndicesFactory()
   );

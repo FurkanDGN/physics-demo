@@ -2,6 +2,7 @@ package me.furkandgn.physicsdemo.common.body.shapes;
 
 import me.furkandgn.physicsdemo.common.body.Body;
 import me.furkandgn.physicsdemo.common.body.attribute.Transform;
+import org.joml.Vector2d;
 import org.joml.Vector4f;
 
 /**
@@ -16,9 +17,10 @@ public class RectBody extends Body {
   public RectBody(int width,
                   int height,
                   float mass,
-                  Transform transform,
+                  int x,
+                  int y,
                   Vector4f color) {
-    super(mass, transform);
+    super(mass, Transform.of(new Vector2d(x, y), new Vector2d(1, 1)));
     this.width = width;
     this.height = height;
     this.color = color;

@@ -1,29 +1,24 @@
 package me.furkandgn.physicsdemo.common.body.surfaces;
 
-import me.furkandgn.physicsdemo.common.body.Body;
-import me.furkandgn.physicsdemo.common.body.attribute.Transform;
+import me.furkandgn.physicsdemo.common.body.shapes.RectBody;
+import org.joml.Vector4f;
 
 /**
  * @author Furkan Doğan
  */
-public class FlatSurfaceBody extends Body {
+public class FlatSurfaceBody extends RectBody {
 
-  public FlatSurfaceBody(float mass, Transform transform) {
-    super(mass, transform);
+  public FlatSurfaceBody(int width,
+                         int height,
+                         float mass,
+                         int x,
+                         int y,
+                         Vector4f color) {
+    super(width, height, mass, x, y, color);
   }
 
   @Override
-  public int width() {
-    return 0;
-  }
-
-  @Override
-  public int height() {
-    return 0;
-  }
-
-  @Override
-  public boolean canCollide(Body anotherBody) {
-    return false;
+  public boolean isSurface() {
+    return true;
   }
 }

@@ -26,6 +26,10 @@ public abstract class Body {
     this.uniqueId = UUID.randomUUID();
   }
 
+  public boolean isSurface() {
+    return false;
+  }
+
   public abstract int width();
 
   public abstract int height();

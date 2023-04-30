@@ -11,13 +11,17 @@ import java.util.List;
  */
 public class RK4PhysicEngine implements PhysicEngine {
 
-  private static final double GRAVITY_CONSTANT = -9.81; // m/s^2
+  private static final double GRAVITY_CONSTANT = -1.81; // m/s^2
 
   @Override
   public void evaluate(List<Body> bodies, double dt) {
     double deltaTime = dt * 50;
 
     for (Body body : bodies) {
+      if (body.isSurface()) {
+        continue;
+      }
+
       Vector2d currentVelocity = body.velocity();
       Vector2d currentForce = body.force();
       Vector2d currentPosition = body.transform().position();
