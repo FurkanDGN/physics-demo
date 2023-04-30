@@ -19,5 +19,4 @@ public class Constants {
 
   public static final int POS_OFFSET = 0;
   public static final int COLOR_OFFSET = POS_OFFSET + POS_SIZE * Float.BYTES;
-  public static final int CIRCLE_CORNERS = 100;
 }

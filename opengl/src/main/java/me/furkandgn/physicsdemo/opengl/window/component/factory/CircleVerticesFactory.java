@@ -1,10 +1,10 @@
 package me.furkandgn.physicsdemo.opengl.window.component.factory;
 
 import me.furkandgn.physicsdemo.common.body.shapes.CircleBody;
+import me.furkandgn.physicsdemo.opengl.window.constants.Shapes;
 import org.joml.Vector2d;
 import org.joml.Vector4f;
 
-import static me.furkandgn.physicsdemo.opengl.Constants.CIRCLE_CORNERS;
 import static me.furkandgn.physicsdemo.opengl.Constants.VERTEX_SIZE;
 
 /**
@@ -27,10 +27,11 @@ public class CircleVerticesFactory implements VerticesFactory {
   }
 
   private void create(float[] vertices, int index) {
-    int offset = index * (CIRCLE_CORNERS + 2) * VERTEX_SIZE;
+    int dotCount = Shapes.CIRCLE.getDotCount();
+    int offset = index * dotCount * VERTEX_SIZE;
     Vector4f color = this.body.color();
 
-    double v = Math.PI * 2 / CIRCLE_CORNERS;
+    double v = Math.PI * 2 / (dotCount - 2);
 
     int radius = this.body.radius();
 
@@ -38,7 +39,7 @@ public class CircleVerticesFactory implements VerticesFactory {
     Vector2d scale = this.body.transform().scale();
     this.setVertex(vertices, offset, radius, new Vector2d(position.x, position.y), color);
 
-    for (int i = 0; i <= CIRCLE_CORNERS; i++) {
+    for (int i = 0; i <= dotCount - 2; i++) {
       float x = (float) (Math.cos(v * i) * radius * scale.x + position.x);
       float y = (float) (Math.sin(v * i) * radius * scale.y + position.y);
 

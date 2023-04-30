@@ -3,11 +3,11 @@ package me.furkandgn.physicsdemo.opengl.window.util;
 import me.furkandgn.physicsdemo.common.body.Body;
 import me.furkandgn.physicsdemo.common.body.shapes.CircleBody;
 import me.furkandgn.physicsdemo.common.body.shapes.RectBody;
-import me.furkandgn.physicsdemo.opengl.Constants;
 import me.furkandgn.physicsdemo.opengl.window.render.RenderContext;
 import me.furkandgn.physicsdemo.opengl.window.shader.Shader;
 import org.joml.Matrix4f;
 
+import static me.furkandgn.physicsdemo.opengl.window.constants.Shapes.CIRCLE;
 import static org.lwjgl.opengl.GL11.*;
 import static org.lwjgl.opengl.GL14.glMultiDrawArrays;
 import static org.lwjgl.opengl.GL15.*;
@@ -54,9 +54,10 @@ public class RenderUtil {
 
     int[] first = new int[count];
     int[] counts = new int[count];
+    int circleDotCount = CIRCLE.getDotCount();
     for (int i = 0; i < count; i++) {
-      first[i] = i * (Constants.CIRCLE_CORNERS + 2);
-      counts[i] = Constants.CIRCLE_CORNERS + 2;
+      first[i] = i * (circleDotCount + 2);
+      counts[i] = circleDotCount + 2;
     }
 
     glMultiDrawArrays(GL_TRIANGLE_FAN, first, counts);

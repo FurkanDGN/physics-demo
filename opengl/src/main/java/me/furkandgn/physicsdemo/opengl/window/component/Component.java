@@ -10,13 +10,16 @@ import me.furkandgn.physicsdemo.opengl.window.component.factory.VerticesFactory;
 public abstract class Component {
 
   protected final Body body;
+  private final int dotCount;
   protected final IndicesFactory indicesFactory;
   protected final VerticesFactory verticesFactory;
 
   public Component(Body body,
+                   int dotCount,
                    IndicesFactory indicesFactory,
                    VerticesFactory verticesFactory) {
     this.body = body;
+    this.dotCount = dotCount;
     this.indicesFactory = indicesFactory;
     this.verticesFactory = verticesFactory;
   }
@@ -25,6 +28,10 @@ public abstract class Component {
   }
 
   public abstract void update(double dt);
+
+  public abstract boolean shouldDestroy();
+
+  public abstract boolean shouldUpdate();
 
   public Body body() {
     return this.body;
@@ -36,5 +43,9 @@ public abstract class Component {
 
   public VerticesFactory verticesFactory() {
     return this.verticesFactory;
+  }
+
+  public int dotCount() {
+    return this.dotCount;
   }
 }

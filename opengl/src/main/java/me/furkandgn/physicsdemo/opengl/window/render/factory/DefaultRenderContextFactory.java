@@ -2,13 +2,11 @@ package me.furkandgn.physicsdemo.opengl.window.render.factory;
 
 import me.furkandgn.physicsdemo.common.body.Body;
 import me.furkandgn.physicsdemo.common.misc.Producer;
-import me.furkandgn.physicsdemo.opengl.window.component.sprite.SpriteComponent;
+import me.furkandgn.physicsdemo.opengl.window.component.Component;
 import me.furkandgn.physicsdemo.opengl.window.render.RenderContext;
 
 import static me.furkandgn.physicsdemo.opengl.Constants.*;
-import static me.furkandgn.physicsdemo.opengl.Constants.COLOR_OFFSET;
 import static org.lwjgl.opengl.GL15.*;
-import static org.lwjgl.opengl.GL15.GL_DYNAMIC_DRAW;
 import static org.lwjgl.opengl.GL20.glVertexAttribPointer;
 import static org.lwjgl.opengl.GL30.glBindVertexArray;
 import static org.lwjgl.opengl.GL30.glGenVertexArrays;
@@ -18,23 +16,23 @@ import static org.lwjgl.opengl.GL30.glGenVertexArrays;
  */
 public class DefaultRenderContextFactory implements RenderContextFactory {
 
-  private final Producer<SpriteComponent, float[]> verticesProducer;
-  private final Producer<SpriteComponent, int[]> indicesProducer;
+  private final Producer<Component, float[]> verticesProducer;
+  private final Producer<Component, int[]> indicesProducer;
 
-  public DefaultRenderContextFactory(Producer<SpriteComponent, float[]> verticesProducer,
-                                     Producer<SpriteComponent, int[]> indicesProducer) {
+  public DefaultRenderContextFactory(Producer<Component, float[]> verticesProducer,
+                                     Producer<Component, int[]> indicesProducer) {
     this.verticesProducer = verticesProducer;
     this.indicesProducer = indicesProducer;
   }
 
   @Override
-  public RenderContext createRenderContext(SpriteComponent spriteComponent, int index) {
-    Class<? extends Body> bodyClass = spriteComponent.body().getClass();
+  public RenderContext createRenderContext(Component component, int index) {
+    Class<? extends Body> bodyClass = component.body().getClass();
     RenderContext renderContext = new RenderContext(bodyClass);
 
     this.assignIds(renderContext);
-    this.upsertVertices(spriteComponent, renderContext, index);
-    this.insertIndices(spriteComponent, renderContext);
+    this.upsertVertices(component, renderContext, index);
+    this.insertIndices(component, renderContext);
     this.setupVertexBuffer(renderContext);
     this.setupElementBuffer(renderContext);
     this.setupVertexArray(renderContext);
@@ -53,14 +51,14 @@ public class DefaultRenderContextFactory implements RenderContextFactory {
     renderContext.eboId(eboID);
   }
 
-  private void upsertVertices(SpriteComponent spriteComponent, RenderContext renderContext, int index) {
-    float[] vertices = renderContext.vertices() != null ? renderContext.vertices() : this.verticesProducer.produce(spriteComponent);
-    spriteComponent.verticesFactory().createVertices(vertices, index);
+  private void upsertVertices(Component component, RenderContext renderContext, int index) {
+    float[] vertices = renderContext.vertices() != null ? renderContext.vertices() : this.verticesProducer.produce(component);
+    component.verticesFactory().createVertices(vertices, index);
     renderContext.vertices(vertices);
   }
 
-  private void insertIndices(SpriteComponent spriteComponent, RenderContext renderContext) {
-    int[] indices = this.indicesProducer.produce(spriteComponent);
+  private void insertIndices(Component component, RenderContext renderContext) {
+    int[] indices = this.indicesProducer.produce(component);
     renderContext.indices(indices);
   }
 

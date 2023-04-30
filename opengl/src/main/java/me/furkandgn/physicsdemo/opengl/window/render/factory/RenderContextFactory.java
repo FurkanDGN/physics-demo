@@ -1,6 +1,6 @@
 package me.furkandgn.physicsdemo.opengl.window.render.factory;
 
-import me.furkandgn.physicsdemo.opengl.window.component.sprite.SpriteComponent;
+import me.furkandgn.physicsdemo.opengl.window.component.Component;
 import me.furkandgn.physicsdemo.opengl.window.render.RenderContext;
 
 /**
@@ -8,5 +8,5 @@ import me.furkandgn.physicsdemo.opengl.window.render.RenderContext;
  */
 public interface RenderContextFactory {
 
-  RenderContext createRenderContext(SpriteComponent spriteComponent, int index);
+  RenderContext createRenderContext(Component component, int index);
 }

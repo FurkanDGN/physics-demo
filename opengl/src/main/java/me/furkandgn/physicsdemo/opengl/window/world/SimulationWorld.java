@@ -7,8 +7,10 @@ import me.furkandgn.physicsdemo.common.body.shapes.RectBody;
 import me.furkandgn.physicsdemo.common.gui.world.AbstractWorld;
 import me.furkandgn.physicsdemo.opengl.Constants;
 import me.furkandgn.physicsdemo.opengl.window.camera.Camera;
+import me.furkandgn.physicsdemo.opengl.window.component.Component;
 import me.furkandgn.physicsdemo.opengl.window.component.factory.*;
 import me.furkandgn.physicsdemo.opengl.window.component.sprite.SpriteComponent;
+import me.furkandgn.physicsdemo.opengl.window.constants.Shapes;
 import me.furkandgn.physicsdemo.opengl.window.render.RenderBatchManager;
 
 import java.util.List;
@@ -26,7 +28,7 @@ public class SimulationWorld extends AbstractWorld {
   );
 
   private final RenderBatchManager renderBatchManager;
-  private final List<SpriteComponent> spriteComponents = new CopyOnWriteArrayList<>();
+  private final List<Component> components = new CopyOnWriteArrayList<>();
   private final int height;
 
   public SimulationWorld(PhysicEngine physicEngine,
@@ -40,19 +42,19 @@ public class SimulationWorld extends AbstractWorld {
   @Override
   public void addBody(Body body) {
     super.addBody(body);
-    SpriteComponent spriteComponent = this.buildSpriteComponent(body);
-    spriteComponent.init();
-    this.renderBatchManager.add(spriteComponent);
-    this.spriteComponents.add(spriteComponent);
+    Component component = this.buildComponent(body);
+    component.init();
+    this.renderBatchManager.add(component);
+    this.components.add(component);
   }
 
   @Override
   public void tick(double dt) {
-    for (SpriteComponent spriteComponent : this.spriteComponents) {
-      spriteComponent.update(dt);
-      if (spriteComponent.shouldDestroy()) {
-        this.bodies.remove(spriteComponent.body());
-        this.spriteComponents.remove(spriteComponent);
+    for (Component component : this.components) {
+      component.update(dt);
+      if (component.shouldDestroy()) {
+        this.bodies.remove(component.body());
+        this.components.remove(component);
       }
     }
     super.tick(dt);
@@ -68,12 +70,24 @@ public class SimulationWorld extends AbstractWorld {
     this.renderBatchManager.render();
   }
 
-  private SpriteComponent buildSpriteComponent(Body body) {
+  private Component buildComponent(Body body) {
     IndicesFactory indicesFactory = INDICES_FACTORIES.get(body.getClass());
+    VerticesFactory verticesFactory = this.buildVerticesFactory(body);
+
     if (body instanceof RectBody) {
-      return new SpriteComponent(body, indicesFactory, new RectangleVerticesFactory((RectBody) body, this.height));
+      return new SpriteComponent(body, indicesFactory, verticesFactory, Shapes.RECTANGLE.getDotCount());
     } else if (body instanceof CircleBody) {
-      return new SpriteComponent(body, indicesFactory, new CircleVerticesFactory((CircleBody) body, this.height));
+      return new SpriteComponent(body, indicesFactory, verticesFactory, Shapes.CIRCLE.getDotCount());
+    } else {
+      throw new RuntimeException("Unsupported body type " + body.getClass().getSimpleName());
+    }
+  }
+
+  private VerticesFactory buildVerticesFactory(Body body) {
+    if (body instanceof RectBody rectBody) {
+      return new RectangleVerticesFactory(rectBody, this.height);
+    } else if (body instanceof CircleBody circleBody) {
+      return new CircleVerticesFactory(circleBody, this.height);
     } else {
       throw new RuntimeException("Unsupported body type " + body.getClass().getSimpleName());
     }

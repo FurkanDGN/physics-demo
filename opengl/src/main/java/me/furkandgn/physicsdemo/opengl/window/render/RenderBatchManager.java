@@ -1,7 +1,7 @@
 package me.furkandgn.physicsdemo.opengl.window.render;
 
 import me.furkandgn.physicsdemo.opengl.window.camera.Camera;
-import me.furkandgn.physicsdemo.opengl.window.component.sprite.SpriteComponent;
+import me.furkandgn.physicsdemo.opengl.window.component.Component;
 import org.joml.Matrix4f;
 
 import java.util.ArrayList;
@@ -25,9 +25,9 @@ public class RenderBatchManager {
     this.renderBatches = new ArrayList<>();
   }
 
-  public void add(SpriteComponent spriteComponent) {
+  public void add(Component component) {
     RenderBatch renderBatch = this.availableRenderBatch();
-    renderBatch.add(spriteComponent);
+    renderBatch.add(component);
   }
 
   public void update() {
