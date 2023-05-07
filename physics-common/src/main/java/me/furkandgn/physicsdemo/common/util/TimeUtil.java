@@ -2,14 +2,14 @@ package me.furkandgn.physicsdemo.common.util;
 
 public class TimeUtil {
 
-  public static final double SECOND_TO_NANO = 1_000_000_000d;
+  public static final double SECOND_TO_NANOS = 1.0e9;
 
-  public static long getTime() {
+  public static long getCurrentTimeNanos() {
     return System.nanoTime();
   }
 
-  public static long deltaTime(long time) {
-    long now = System.nanoTime();
-    return now - time;
+  public static long getDeltaTimeNanos(long startTimeNanos) {
+    long currentTimeNanos = System.nanoTime();
+    return currentTimeNanos - startTimeNanos;
   }
 }

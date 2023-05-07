@@ -14,7 +14,7 @@ import org.lwjgl.glfw.Callbacks;
 import java.util.Objects;
 import java.util.concurrent.locks.LockSupport;
 
-import static me.furkandgn.physicsdemo.common.util.TimeUtil.SECOND_TO_NANO;
+import static me.furkandgn.physicsdemo.common.util.TimeUtil.SECOND_TO_NANOS;
 import static me.furkandgn.physicsdemo.opengl.Constants.FPS_LIMIT;
 import static me.furkandgn.physicsdemo.opengl.Constants.FPS_TIME_OFFSET;
 import static org.lwjgl.glfw.GLFW.*;
@@ -86,7 +86,7 @@ public class OpenGlAppWindow implements AppWindow {
   }
 
   private void update() {
-    double dtInDouble = this.dt / SECOND_TO_NANO;
+    double dtInDouble = this.dt / SECOND_TO_NANOS;
     this.scene.tick(dtInDouble);
     this.appListener.onTick();
     this.scene.render(dtInDouble);
@@ -105,7 +105,7 @@ public class OpenGlAppWindow implements AppWindow {
   }
 
   private void limitFrameRate() {
-    long framePerTime = Math.round(SECOND_TO_NANO / FPS_LIMIT);
+    long framePerTime = Math.round(SECOND_TO_NANOS / FPS_LIMIT);
     long currentTime = System.nanoTime();
 
     if (framePerTime > this.dt) {
@@ -135,8 +135,8 @@ public class OpenGlAppWindow implements AppWindow {
   }
 
   private void updateTime() {
-    this.dt = TimeUtil.deltaTime(this.beginTime);
-    this.beginTime = TimeUtil.getTime();
+    this.dt = TimeUtil.getDeltaTimeNanos(this.beginTime);
+    this.beginTime = TimeUtil.getCurrentTimeNanos();
   }
 
   private void countFrame() {
