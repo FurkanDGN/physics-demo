@@ -1,7 +1,8 @@
-package me.furkandgn.physicsdemo.common.collision.swp;
+package me.furkandgn.physicsdemo.common.collision;
 
-import me.furkandgn.physicsdemo.common.body.Body;
+import me.furkandgn.physicsdemo.common.Body;
 import me.furkandgn.physicsdemo.common.CollisionDetector;
+import me.furkandgn.physicsdemo.common.CollisionEvent;
 
 import java.util.*;
 

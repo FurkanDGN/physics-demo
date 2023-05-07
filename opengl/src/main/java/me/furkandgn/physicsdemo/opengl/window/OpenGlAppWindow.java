@@ -1,8 +1,8 @@
 package me.furkandgn.physicsdemo.opengl.window;
 
-import me.furkandgn.physicsdemo.common.gui.scene.Scene;
-import me.furkandgn.physicsdemo.common.gui.window.AppWindow;
-import me.furkandgn.physicsdemo.common.gui.world.World;
+import me.furkandgn.physicsdemo.common.gui.Scene;
+import me.furkandgn.physicsdemo.common.gui.AppWindow;
+import me.furkandgn.physicsdemo.common.gui.World;
 import me.furkandgn.physicsdemo.common.util.TimeUtil;
 import me.furkandgn.physicsdemo.opengl.window.listener.AppListener;
 import me.furkandgn.physicsdemo.opengl.window.scene.SimulationScene;

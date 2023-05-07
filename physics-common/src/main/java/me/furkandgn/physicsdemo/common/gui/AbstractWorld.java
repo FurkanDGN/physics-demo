@@ -1,7 +1,8 @@
-package me.furkandgn.physicsdemo.common.gui.world;
+package me.furkandgn.physicsdemo.common.gui;
 
 import me.furkandgn.physicsdemo.common.PhysicEngine;
-import me.furkandgn.physicsdemo.common.body.Body;
+import me.furkandgn.physicsdemo.common.Body;
+import me.furkandgn.physicsdemo.common.gui.World;
 
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;

@@ -1,6 +1,6 @@
 package me.furkandgn.physicsdemo.common.body.shapes;
 
-import me.furkandgn.physicsdemo.common.body.Body;
+import me.furkandgn.physicsdemo.common.Body;
 import me.furkandgn.physicsdemo.common.body.attribute.Transform;
 import org.joml.Vector2d;
 import org.joml.Vector4f;

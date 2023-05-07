@@ -1,4 +1,4 @@
-package me.furkandgn.physicsdemo.common.gui.scene;
+package me.furkandgn.physicsdemo.common.gui;
 
 /**
  * @author Furkan Doğan

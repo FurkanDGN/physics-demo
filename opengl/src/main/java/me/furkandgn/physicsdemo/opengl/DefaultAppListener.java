@@ -1,16 +1,16 @@
 package me.furkandgn.physicsdemo.opengl;
 
-import me.furkandgn.physicsdemo.common.body.Body;
+import me.furkandgn.physicsdemo.common.Body;
 import me.furkandgn.physicsdemo.common.body.shapes.CircleBody;
 import me.furkandgn.physicsdemo.common.body.shapes.RectBody;
 import me.furkandgn.physicsdemo.common.body.surfaces.FlatSurfaceBody;
-import me.furkandgn.physicsdemo.common.gui.world.World;
+import me.furkandgn.physicsdemo.common.gui.World;
 import me.furkandgn.physicsdemo.opengl.window.listener.AppListener;
 import me.furkandgn.physicsdemo.opengl.window.util.ColorUtil;
 import org.joml.Vector4f;
 
-import static me.furkandgn.physicsdemo.common.gui.GuiConstants.HEIGHT;
-import static me.furkandgn.physicsdemo.common.gui.GuiConstants.WIDTH;
+import static me.furkandgn.physicsdemo.common.constants.GuiConstants.HEIGHT;
+import static me.furkandgn.physicsdemo.common.constants.GuiConstants.WIDTH;
 
 /**
  * @author Furkan Doğan

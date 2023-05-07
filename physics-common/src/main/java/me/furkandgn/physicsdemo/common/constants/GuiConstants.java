@@ -1,4 +1,4 @@
-package me.furkandgn.physicsdemo.common.gui;
+package me.furkandgn.physicsdemo.common.constants;
 
 /**
  * @author Furkan Doğan

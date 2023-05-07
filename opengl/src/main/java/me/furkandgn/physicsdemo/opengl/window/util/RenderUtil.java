@@ -1,6 +1,6 @@
 package me.furkandgn.physicsdemo.opengl.window.util;
 
-import me.furkandgn.physicsdemo.common.body.Body;
+import me.furkandgn.physicsdemo.common.Body;
 import me.furkandgn.physicsdemo.common.body.shapes.CircleBody;
 import me.furkandgn.physicsdemo.common.body.shapes.RectBody;
 import me.furkandgn.physicsdemo.opengl.window.render.RenderContext;

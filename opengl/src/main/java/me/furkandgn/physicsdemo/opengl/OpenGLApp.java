@@ -3,10 +3,10 @@ package me.furkandgn.physicsdemo.opengl;
 import me.furkandgn.physicsdemo.common.CollisionSolver;
 import me.furkandgn.physicsdemo.common.PhysicEngine;
 import me.furkandgn.physicsdemo.common.CollisionDetector;
-import me.furkandgn.physicsdemo.common.collision.swp.EventDrivenSweepAndPrune;
+import me.furkandgn.physicsdemo.common.collision.EventDrivenSweepAndPrune;
 import me.furkandgn.physicsdemo.common.engines.VerletPhysicEngine;
-import me.furkandgn.physicsdemo.common.gui.window.AppWindow;
-import me.furkandgn.physicsdemo.common.gui.world.World;
+import me.furkandgn.physicsdemo.common.gui.AppWindow;
+import me.furkandgn.physicsdemo.common.gui.World;
 import me.furkandgn.physicsdemo.common.manager.DefaultCollisionSolver;
 import me.furkandgn.physicsdemo.opengl.window.OpenGlAppWindow;
 import me.furkandgn.physicsdemo.opengl.window.camera.Camera;
@@ -14,8 +14,8 @@ import me.furkandgn.physicsdemo.opengl.window.listener.AppListener;
 import me.furkandgn.physicsdemo.opengl.window.world.SimulationWorld;
 import org.joml.Vector2f;
 
-import static me.furkandgn.physicsdemo.common.gui.GuiConstants.HEIGHT;
-import static me.furkandgn.physicsdemo.common.gui.GuiConstants.WIDTH;
+import static me.furkandgn.physicsdemo.common.constants.GuiConstants.HEIGHT;
+import static me.furkandgn.physicsdemo.common.constants.GuiConstants.WIDTH;
 
 /**
  * @author Furkan Doğan

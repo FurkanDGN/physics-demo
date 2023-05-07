@@ -1,7 +1,7 @@
 package me.furkandgn.physicsdemo.opengl.window.scene;
 
-import me.furkandgn.physicsdemo.common.gui.scene.Scene;
-import me.furkandgn.physicsdemo.common.gui.world.World;
+import me.furkandgn.physicsdemo.common.gui.Scene;
+import me.furkandgn.physicsdemo.common.gui.World;
 
 /**
  * @author Furkan Doğan

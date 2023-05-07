@@ -1,8 +1,8 @@
 package me.furkandgn.physicsdemo.opengl.window.component.sprite;
 
-import me.furkandgn.physicsdemo.common.body.Body;
+import me.furkandgn.physicsdemo.common.Body;
 import me.furkandgn.physicsdemo.common.body.attribute.Transform;
-import me.furkandgn.physicsdemo.common.gui.GuiConstants;
+import me.furkandgn.physicsdemo.common.constants.GuiConstants;
 import me.furkandgn.physicsdemo.opengl.window.component.Component;
 import me.furkandgn.physicsdemo.opengl.window.component.factory.IndicesFactory;
 import me.furkandgn.physicsdemo.opengl.window.component.factory.VerticesFactory;

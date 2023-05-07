@@ -1,11 +1,11 @@
 package me.furkandgn.physicsdemo.opengl.window.world;
 
 import me.furkandgn.physicsdemo.common.PhysicEngine;
-import me.furkandgn.physicsdemo.common.body.Body;
+import me.furkandgn.physicsdemo.common.Body;
 import me.furkandgn.physicsdemo.common.body.shapes.CircleBody;
 import me.furkandgn.physicsdemo.common.body.shapes.RectBody;
 import me.furkandgn.physicsdemo.common.body.surfaces.FlatSurfaceBody;
-import me.furkandgn.physicsdemo.common.gui.world.AbstractWorld;
+import me.furkandgn.physicsdemo.common.gui.AbstractWorld;
 import me.furkandgn.physicsdemo.opengl.Constants;
 import me.furkandgn.physicsdemo.opengl.window.camera.Camera;
 import me.furkandgn.physicsdemo.opengl.window.component.Component;

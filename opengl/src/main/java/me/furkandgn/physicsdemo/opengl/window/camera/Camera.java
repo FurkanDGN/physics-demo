@@ -4,8 +4,8 @@ import org.joml.Matrix4f;
 import org.joml.Vector2f;
 import org.joml.Vector3f;
 
-import static me.furkandgn.physicsdemo.common.gui.GuiConstants.HEIGHT;
-import static me.furkandgn.physicsdemo.common.gui.GuiConstants.WIDTH;
+import static me.furkandgn.physicsdemo.common.constants.GuiConstants.HEIGHT;
+import static me.furkandgn.physicsdemo.common.constants.GuiConstants.WIDTH;
 
 public class Camera {
 

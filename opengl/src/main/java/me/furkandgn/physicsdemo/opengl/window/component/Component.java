@@ -1,6 +1,6 @@
 package me.furkandgn.physicsdemo.opengl.window.component;
 
-import me.furkandgn.physicsdemo.common.body.Body;
+import me.furkandgn.physicsdemo.common.Body;
 import me.furkandgn.physicsdemo.opengl.window.component.factory.IndicesFactory;
 import me.furkandgn.physicsdemo.opengl.window.component.factory.VerticesFactory;
 

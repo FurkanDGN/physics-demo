@@ -1,6 +1,6 @@
 package me.furkandgn.physicsdemo.opengl.window.render;
 
-import me.furkandgn.physicsdemo.common.body.Body;
+import me.furkandgn.physicsdemo.common.Body;
 import me.furkandgn.physicsdemo.opengl.window.component.Component;
 import me.furkandgn.physicsdemo.opengl.window.render.factory.DefaultRenderContextFactory;
 import me.furkandgn.physicsdemo.opengl.window.render.factory.RenderContextFactory;
