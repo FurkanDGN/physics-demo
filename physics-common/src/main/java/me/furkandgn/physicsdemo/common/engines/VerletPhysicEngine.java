@@ -31,14 +31,17 @@ public class VerletPhysicEngine implements PhysicEngine {
   private void update(Body body, double dt) {
     if (body.isSurface()) return;
     Vector2d position = body.transform().position();
-    Vector2d prevPosition = body.transform().lastPosition();
+    body.transform().lastPosition().set(position);
     Vector2d acceleration = this.applyForces(dt);
     Vector2d force = body.force();
+    Vector2d velocity = body.velocity();
 
-    double timeStep = dt * 10;
+    double timeStep = dt * 20;
+    Vector2d virtualPrevPosition = new Vector2d(position).sub(velocity.mul(timeStep, new Vector2d()));
 
-    this.apply(position, prevPosition, acceleration, force, timeStep);
+    this.apply(position, virtualPrevPosition, acceleration, force, timeStep);
     force.set(0);
+    velocity.set(position).sub(virtualPrevPosition).mul(1.0 / timeStep);
   }
 
   private Vector2d applyForces(double dt) {
