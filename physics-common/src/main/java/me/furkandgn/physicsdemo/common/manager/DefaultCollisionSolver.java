@@ -1,9 +1,9 @@
 package me.furkandgn.physicsdemo.common.manager;
 
-import me.furkandgn.physicsdemo.common.CollisionSolver;
 import me.furkandgn.physicsdemo.common.Body;
-import me.furkandgn.physicsdemo.common.body.shapes.CircleBody;
 import me.furkandgn.physicsdemo.common.CollisionEvent;
+import me.furkandgn.physicsdemo.common.CollisionSolver;
+import me.furkandgn.physicsdemo.common.body.shapes.CircleBody;
 import org.joml.Vector2d;
 
 import java.util.List;

@@ -5,7 +5,7 @@ import me.furkandgn.physicsdemo.common.body.attribute.Transform;
 import org.joml.Vector2d;
 import org.joml.Vector4f;
 
-import java.awt.Rectangle;
+import java.awt.*;
 
 /**
  * @author Furkan Doğan

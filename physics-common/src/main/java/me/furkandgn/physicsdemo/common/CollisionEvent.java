@@ -1,7 +1,5 @@
 package me.furkandgn.physicsdemo.common;
 
-import me.furkandgn.physicsdemo.common.Body;
-
 /**
  * @author Furkan Doğan
  */
