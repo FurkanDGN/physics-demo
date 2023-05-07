@@ -25,8 +25,4 @@ public class SimulationScene implements Scene {
   public void render(double dt) {
     this.world.render();
   }
-
-  @Override
-  public void reset() {
-  }
 }

@@ -8,6 +8,4 @@ public interface Scene {
   void tick(double dt);
 
   void render(double dt);
-
-  void reset();
 }
