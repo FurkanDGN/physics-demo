@@ -3,8 +3,8 @@ package me.furkandgn.physicsdemo.common.constants;
 /**
  * @author Furkan Doğan
  */
-public class GuiConstants {
+public interface GuiConstants {
 
-  public static final int WIDTH = 1220;
-  public static final int HEIGHT = 850;
+  int WIDTH = 1220;
+  int HEIGHT = 850;
 }
