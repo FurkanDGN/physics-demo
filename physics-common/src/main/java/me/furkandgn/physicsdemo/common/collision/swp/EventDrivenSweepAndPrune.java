@@ -1,11 +1,11 @@
 package me.furkandgn.physicsdemo.common.collision.swp;
 
 import me.furkandgn.physicsdemo.common.body.Body;
-import me.furkandgn.physicsdemo.common.collision.CollisionDetector;
+import me.furkandgn.physicsdemo.common.CollisionDetector;
 
 import java.util.*;
 
-public class EventDrivenSweepAndPrune implements CollisionDetector<List<CollisionEvent>> {
+public class EventDrivenSweepAndPrune implements CollisionDetector {
 
   @Override
   public List<CollisionEvent> findCollisions(List<Body> bodies) {

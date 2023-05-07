@@ -1,11 +1,9 @@
 package me.furkandgn.physicsdemo.common.manager;
 
-import me.furkandgn.physicsdemo.common.CollisionManager;
+import me.furkandgn.physicsdemo.common.CollisionSolver;
 import me.furkandgn.physicsdemo.common.body.Body;
 import me.furkandgn.physicsdemo.common.body.shapes.CircleBody;
-import me.furkandgn.physicsdemo.common.collision.CollisionDetector;
 import me.furkandgn.physicsdemo.common.collision.swp.CollisionEvent;
-import me.furkandgn.physicsdemo.common.collision.swp.EventDrivenSweepAndPrune;
 import org.joml.Vector2d;
 
 import java.util.List;
@@ -13,14 +11,11 @@ import java.util.List;
 /**
  * @author Furkan Doğan
  */
-public class DefaultCollisionManager implements CollisionManager {
-
-  private final CollisionDetector<List<CollisionEvent>> collisionDetector = new EventDrivenSweepAndPrune();
+public class DefaultCollisionSolver implements CollisionSolver {
 
   @Override
-  public void detectAndSolveCollisions(List<Body> bodies) {
+  public void solveCollisions(List<CollisionEvent> collisions) {
     for (int i = 0; i < 10; i++) {
-      List<CollisionEvent> collisions = this.collisionDetector.findCollisions(bodies);
       for (CollisionEvent collision : collisions) {
         Body body1 = collision.body1();
         Body body2 = collision.body2();

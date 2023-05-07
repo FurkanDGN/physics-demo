@@ -1,8 +1,10 @@
 package me.furkandgn.physicsdemo.common.engines;
 
-import me.furkandgn.physicsdemo.common.CollisionManager;
+import me.furkandgn.physicsdemo.common.CollisionSolver;
 import me.furkandgn.physicsdemo.common.PhysicEngine;
 import me.furkandgn.physicsdemo.common.body.Body;
+import me.furkandgn.physicsdemo.common.CollisionDetector;
+import me.furkandgn.physicsdemo.common.collision.swp.CollisionEvent;
 import org.joml.Vector2d;
 
 import java.util.List;
@@ -14,16 +16,20 @@ import static me.furkandgn.physicsdemo.common.constants.PhysicConstants.GRAVITY_
  */
 public class VerletPhysicEngine implements PhysicEngine {
 
-  private final CollisionManager collisionManager;
+  private final CollisionDetector collisionDetector;
+  private final CollisionSolver collisionSolver;
 
-  public VerletPhysicEngine(CollisionManager collisionManager) {
-    this.collisionManager = collisionManager;
+  public VerletPhysicEngine(CollisionDetector collisionDetector,
+                            CollisionSolver collisionSolver) {
+    this.collisionDetector = collisionDetector;
+    this.collisionSolver = collisionSolver;
   }
 
   @Override
   public void evaluate(List<Body> bodies, double dt) {
     bodies.forEach(body -> this.update(body, dt));
-    this.collisionManager.detectAndSolveCollisions(bodies);
+    List<CollisionEvent> collisions = this.collisionDetector.findCollisions(bodies);
+    this.collisionSolver.solveCollisions(collisions);
   }
 
   private void update(Body body, double dt) {
