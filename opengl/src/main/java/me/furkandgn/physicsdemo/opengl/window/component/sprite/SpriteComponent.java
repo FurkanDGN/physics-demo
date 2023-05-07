@@ -24,7 +24,6 @@ public class SpriteComponent extends Component {
 
   @Override
   public void init() {
-    this.updateLastPosition();
   }
 
   @Override
@@ -38,12 +37,6 @@ public class SpriteComponent extends Component {
 
   public boolean shouldDestroy() {
     return this.body.transform().position().y < -GuiConstants.HEIGHT;
-  }
-
-  private void updateLastPosition() {
-    Transform transform = this.body.transform();
-    Vector2d position = transform.position();
-    transform.lastPosition().set(position);
   }
 
   private void updateMoved() {

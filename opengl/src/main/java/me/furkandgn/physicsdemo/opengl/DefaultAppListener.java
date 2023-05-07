@@ -37,7 +37,7 @@ public class DefaultAppListener implements AppListener {
 
   @Override
   public void onTick() {
-    if (this.lastPut <= System.currentTimeMillis() - 1000L) {
+    if (this.lastPut <= System.currentTimeMillis() - 10000000L) {
       this.spawnBody(this.world, WIDTH / 2);
       this.lastPut = System.currentTimeMillis();
     }
@@ -50,14 +50,15 @@ public class DefaultAppListener implements AppListener {
 
   private void spawnBody(World world, int x) {
     Body body = this.circleBody(x);
-    body.velocity().add(-10, 0);
+//    body.velocity().add(100, 0);
+//    body.force(new Vector2d(0, 200));
     world.addBody(body);
   }
 
   private CircleBody circleBody(int x) {
-    int y = 200;
+    int y = 600;
     Vector4f color = ColorUtil.randomColor();
-    return new CircleBody(20, 1, x, y, color);
+    return new CircleBody(20, 100, x, y, color);
   }
 
   private RectBody rectBody(int x) {

@@ -39,7 +39,7 @@ public class OpenGlAppWindow implements AppWindow {
   private Scene scene;
   private long window;
   private long beginTime;
-  private long dt = -1;
+  private long dt = 10000000; // initial delta time
   private long firstRender = 0;
   private short frameCount = 0;
 
@@ -77,9 +77,7 @@ public class OpenGlAppWindow implements AppWindow {
   private void loop() {
     glfwPollEvents();
     glClearColor(RED, GREEN, BLUE, 1f);
-    if (this.beginTime == 0) {
-      this.beginTime = System.nanoTime();
-    }
+    this.beginTime = System.nanoTime();
     while (!glfwWindowShouldClose(this.window)) {
       this.preLoop();
       this.update();
@@ -88,9 +86,10 @@ public class OpenGlAppWindow implements AppWindow {
   }
 
   private void update() {
-    this.scene.tick(this.dt / SECOND_TO_NANO);
+    double dtInDouble = this.dt / SECOND_TO_NANO;
+    this.scene.tick(dtInDouble);
     this.appListener.onTick();
-    this.scene.render(this.dt / SECOND_TO_NANO);
+    this.scene.render(dtInDouble);
     this.countFrame();
   }
 

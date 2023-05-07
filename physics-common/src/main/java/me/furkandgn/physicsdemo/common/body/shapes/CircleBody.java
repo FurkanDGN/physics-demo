@@ -5,6 +5,8 @@ import me.furkandgn.physicsdemo.common.body.attribute.Transform;
 import org.joml.Vector2d;
 import org.joml.Vector4f;
 
+import java.awt.Rectangle;
+
 /**
  * @author Furkan Doğan
  */
@@ -35,8 +37,14 @@ public class CircleBody extends Body {
 
   @Override
   public boolean canCollide(Body anotherBody) {
-    if (anotherBody instanceof RectBody) {
-      return true;
+    if (anotherBody instanceof RectBody rectBody) {
+      int minXr = (int) rectBody.x() - rectBody.width() / 2;
+      int minYr = (int) rectBody.y() - rectBody.height() / 2;
+
+      int minX = (int) this.x() - this.radius();
+      int minY = (int) this.y() - this.radius();
+
+      return new Rectangle(minXr, minYr, rectBody.width(), rectBody.height()).intersects(new Rectangle(minX, minY, this.radius * 2, this.radius * 2));
     } else if (anotherBody instanceof CircleBody circleBody) {
       Vector2d position1 = this.transform.position();
       Vector2d position2 = circleBody.transform.position();
