@@ -3,6 +3,7 @@ package me.furkandgn.physicsdemo.common;
 import me.furkandgn.physicsdemo.common.body.attribute.Transform;
 import org.joml.Vector2d;
 
+import java.util.List;
 import java.util.UUID;
 
 /**
@@ -10,31 +11,44 @@ import java.util.UUID;
  */
 public abstract class Body {
 
-  protected final float mass;
+  protected final int width;
+  protected final int height;
+  protected final List<Point> points;
   protected final Transform transform;
-  private final UUID uniqueId;
+  protected final float mass;
+  protected final UUID uniqueId;
 
-  protected Vector2d velocity;
   protected Vector2d force;
+  protected Vector2d velocity;
 
-  public Body(float mass,
-              Transform transform) {
-    this.mass = mass;
+  public Body(List<Point> points,
+              Transform transform,
+              float mass) {
+    if (points.size() < 3) {
+      throw new IllegalArgumentException("Points size cannot be less than 3");
+    }
+
+    this.width = (int) (points.stream().mapToDouble(Point::x).max().orElse(0) - points.stream().mapToDouble(Point::x).min().orElse(0));
+    this.height = (int) (points.stream().mapToDouble(Point::y).max().orElse(0) - points.stream().mapToDouble(Point::y).min().orElse(0));
+    this.points = points;
     this.transform = transform;
-    this.velocity = new Vector2d();
-    this.force = new Vector2d();
+    this.mass = mass;
     this.uniqueId = UUID.randomUUID();
+    this.force = new Vector2d();
+    this.velocity = new Vector2d();
   }
 
-  public boolean isSurface() {
-    return false;
+  public int width() {
+    return this.width;
   }
 
-  public abstract int width();
+  public int height() {
+    return this.height;
+  }
 
-  public abstract int height();
-
-  public abstract boolean canCollide(Body anotherBody);
+  public List<Point> points() {
+    return this.points;
+  }
 
   public double x() {
     return this.transform.position().x;
@@ -56,19 +70,15 @@ public abstract class Body {
     return this.velocity;
   }
 
-  public void velocity(Vector2d velocity) {
-    this.velocity = velocity;
-  }
-
   public Vector2d force() {
     return this.force;
   }
 
-  public void force(Vector2d force) {
-    this.force = force;
-  }
-
   public UUID uniqueId() {
     return this.uniqueId;
+  }
+
+  public boolean isSurface() {
+    return false;
   }
 }

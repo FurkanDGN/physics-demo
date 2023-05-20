@@ -9,6 +9,8 @@ import me.furkandgn.physicsdemo.opengl.window.listener.AppListener;
 import me.furkandgn.physicsdemo.opengl.window.util.ColorUtil;
 import org.joml.Vector4f;
 
+import java.util.Random;
+
 import static me.furkandgn.physicsdemo.common.constants.GuiConstants.HEIGHT;
 import static me.furkandgn.physicsdemo.common.constants.GuiConstants.WIDTH;
 
@@ -28,17 +30,17 @@ public class DefaultAppListener implements AppListener {
   @Override
   public void onInit() {
     Vector4f color = ColorUtil.getColor(105, 95, 163);
-    this.world.addBody(new FlatSurfaceBody(30, HEIGHT, 15, HEIGHT / 2, color));
-    this.world.addBody(new FlatSurfaceBody(WIDTH, 30, WIDTH / 2, 15, color));
-    this.world.addBody(new FlatSurfaceBody(30, HEIGHT, WIDTH - 15, HEIGHT / 2, color));
-    this.world.addBody(new FlatSurfaceBody(WIDTH, 30, WIDTH / 2, HEIGHT - 15, color));
+//    this.world.addBody(new FlatSurfaceBody(30, HEIGHT, 15, HEIGHT / 2, color));
+//    this.world.addBody(new FlatSurfaceBody(WIDTH, 30, WIDTH / 2, 15, color));
+//    this.world.addBody(new FlatSurfaceBody(30, HEIGHT, WIDTH - 15, HEIGHT / 2, color));
+//    this.world.addBody(new FlatSurfaceBody(WIDTH, 30, WIDTH / 2, HEIGHT - 15, color));
 
   }
 
   @Override
   public void onTick() {
-    if (this.lastPut <= System.currentTimeMillis() - 10000000L) {
-      this.spawnBody(this.world, WIDTH / 2);
+    if (this.lastPut <= System.currentTimeMillis() - 1000L) {
+      this.spawnBody(this.world, WIDTH / 4);
       this.lastPut = System.currentTimeMillis();
     }
   }
@@ -50,7 +52,8 @@ public class DefaultAppListener implements AppListener {
 
   private void spawnBody(World world, int x) {
     Body body = this.circleBody(x);
-//    body.velocity().add(100, 0);
+    Random random = new Random();
+    body.velocity().add(-100 + random.nextInt(200), -100 + random.nextInt(200));
 //    body.force(new Vector2d(0, 200));
     world.addBody(body);
   }
@@ -58,7 +61,7 @@ public class DefaultAppListener implements AppListener {
   private CircleBody circleBody(int x) {
     int y = 600;
     Vector4f color = ColorUtil.randomColor();
-    return new CircleBody(20, 100, x, y, color);
+    return new CircleBody(60, 100, x, y, 60, color);
   }
 
   private RectBody rectBody(int x) {

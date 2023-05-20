@@ -5,5 +5,5 @@ package me.furkandgn.physicsdemo.opengl.window.component.factory;
  */
 public interface VerticesFactory {
 
-  void createVertices(float[] vertices, int index);
+  float[] createVertices();
 }

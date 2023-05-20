@@ -1,7 +1,7 @@
 package me.furkandgn.physicsdemo.opengl.window.world;
 
-import me.furkandgn.physicsdemo.common.PhysicEngine;
 import me.furkandgn.physicsdemo.common.Body;
+import me.furkandgn.physicsdemo.common.PhysicEngine;
 import me.furkandgn.physicsdemo.common.body.shapes.CircleBody;
 import me.furkandgn.physicsdemo.common.body.shapes.RectBody;
 import me.furkandgn.physicsdemo.common.body.surfaces.FlatSurfaceBody;
@@ -11,7 +11,6 @@ import me.furkandgn.physicsdemo.opengl.window.camera.Camera;
 import me.furkandgn.physicsdemo.opengl.window.component.Component;
 import me.furkandgn.physicsdemo.opengl.window.component.factory.*;
 import me.furkandgn.physicsdemo.opengl.window.component.sprite.SpriteComponent;
-import me.furkandgn.physicsdemo.opengl.window.constants.Shapes;
 import me.furkandgn.physicsdemo.opengl.window.render.RenderBatchManager;
 
 import java.util.List;
@@ -24,8 +23,8 @@ import java.util.concurrent.CopyOnWriteArrayList;
 public class SimulationWorld extends AbstractWorld {
 
   private static final Map<Class<? extends Body>, IndicesFactory> INDICES_FACTORIES = Map.of(
-    FlatSurfaceBody.class, new RectangleIndicesFactory(),
-    RectBody.class, new RectangleIndicesFactory(),
+    FlatSurfaceBody.class, new PolygonIndicesFactory(),
+    RectBody.class, new PolygonIndicesFactory(),
     CircleBody.class, new CircleIndicesFactory()
   );
 
@@ -75,23 +74,10 @@ public class SimulationWorld extends AbstractWorld {
   private Component buildComponent(Body body) {
     IndicesFactory indicesFactory = INDICES_FACTORIES.get(body.getClass());
     VerticesFactory verticesFactory = this.buildVerticesFactory(body);
-
-    if (body instanceof RectBody) {
-      return new SpriteComponent(body, indicesFactory, verticesFactory, Shapes.RECTANGLE.getDotCount());
-    } else if (body instanceof CircleBody) {
-      return new SpriteComponent(body, indicesFactory, verticesFactory, Shapes.CIRCLE.getDotCount());
-    } else {
-      throw new RuntimeException("Unsupported body type " + body.getClass().getSimpleName());
-    }
+    return new SpriteComponent(body, indicesFactory, verticesFactory, body.points().size());
   }
 
   private VerticesFactory buildVerticesFactory(Body body) {
-    if (body instanceof RectBody rectBody) {
-      return new RectangleVerticesFactory(rectBody, this.height);
-    } else if (body instanceof CircleBody circleBody) {
-      return new CircleVerticesFactory(circleBody, this.height);
-    } else {
-      throw new RuntimeException("Unsupported body type " + body.getClass().getSimpleName());
-    }
+    return new PolygonVerticesFactory(body, this.height);
   }
 }

@@ -43,10 +43,12 @@ public class RenderBatchManager {
   }
 
   private RenderBatch availableRenderBatch() {
-    return this.renderBatches.stream()
-      .filter(RenderBatch::hasRoom)
-      .findFirst()
-      .orElseGet(this::createRenderBatch);
+    for (RenderBatch renderBatch : this.renderBatches) {
+      if (!renderBatch.hasRoom()) continue;
+      return renderBatch;
+    }
+
+    return this.createRenderBatch();
   }
 
   private RenderBatch createRenderBatch() {

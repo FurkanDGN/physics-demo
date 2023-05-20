@@ -15,12 +15,6 @@ public class Transform {
 
   private float rotation = 0.0f;
 
-  public Transform(int x, int y) {
-    this.position = new Vector2d(x, y);
-    this.lastPosition = new Vector2d(this.position);
-    this.scale = new Vector2d(1, 1);
-  }
-
   public Transform(Vector2d position,
                    Vector2d scale) {
     this.position = position;

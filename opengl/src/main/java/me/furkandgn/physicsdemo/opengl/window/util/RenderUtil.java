@@ -1,17 +1,12 @@
 package me.furkandgn.physicsdemo.opengl.window.util;
 
-import me.furkandgn.physicsdemo.common.Body;
-import me.furkandgn.physicsdemo.common.body.shapes.CircleBody;
-import me.furkandgn.physicsdemo.common.body.shapes.RectBody;
 import me.furkandgn.physicsdemo.opengl.window.render.RenderContext;
 import me.furkandgn.physicsdemo.opengl.window.shader.Shader;
 import org.joml.Matrix4f;
-import org.lwjgl.PointerBuffer;
 
-import static me.furkandgn.physicsdemo.opengl.window.constants.Shapes.CIRCLE;
 import static org.lwjgl.opengl.GL11.*;
+import static org.lwjgl.opengl.GL13.GL_MULTISAMPLE;
 import static org.lwjgl.opengl.GL15.*;
-import static org.lwjgl.opengl.GL20.glDisableVertexAttribArray;
 import static org.lwjgl.opengl.GL20.glEnableVertexAttribArray;
 import static org.lwjgl.opengl.GL30.glBindVertexArray;
 
@@ -27,54 +22,26 @@ public class RenderUtil {
     return shader;
   }
 
-  public static void render(Class<? extends Body> clazz, RenderContext renderContext, Matrix4f viewMatrix, Matrix4f projectionMatrix, int count) {
+  public static void render(RenderContext renderContext, Matrix4f viewMatrix, Matrix4f projectionMatrix) {
     Shader shader = RenderUtil.getBoundShader();
     shader.use();
     shader.uploadMat4f("uProjection", projectionMatrix);
     shader.uploadMat4f("uView", viewMatrix);
     glEnable(GL_MULTISAMPLE);
-    if (clazz.isAssignableFrom(CircleBody.class) || clazz.getSuperclass().isAssignableFrom(CircleBody.class)) {
-      renderCircle(renderContext, count);
-    } else if (clazz.isAssignableFrom(RectBody.class) || clazz.getSuperclass().isAssignableFrom(RectBody.class)) {
-      renderRect(renderContext, count);
-    } else {
-      throw new RuntimeException("Unsupported body type " + clazz.getSimpleName());
-    }
-
+    renderShape(renderContext);
     glDisable(GL_MULTISAMPLE);
 
     shader.detach();
   }
 
-  private static void renderCircle(RenderContext renderContext, int count) {
+  private static void renderShape(RenderContext renderContext) {
     glBindVertexArray(renderContext.vaoId());
     glBindBuffer(GL_ARRAY_BUFFER, renderContext.vboId());
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, renderContext.eboId());
     glEnableVertexAttribArray(0);
     glEnableVertexAttribArray(1);
+    int length = renderContext.indices().length;
 
-    for (int i = 0; i < count; i++) {
-      long offset = (long) CIRCLE.getDotCount() * i * Integer.BYTES;
-      glDrawElements(GL_TRIANGLE_FAN, CIRCLE.getDotCount(), GL_UNSIGNED_INT, offset);
-    }
-
-    glDisableVertexAttribArray(0);
-    glDisableVertexAttribArray(1);
-    glBindBuffer(GL_ARRAY_BUFFER, 0);
-    glBindVertexArray(0);
-  }
-
-  private static void renderRect(RenderContext renderContext, int count) {
-    int vaoId = renderContext.vaoId();
-    glBindVertexArray(vaoId);
-    glBindBuffer(GL_ARRAY_BUFFER, renderContext.vboId());
-    glEnableVertexAttribArray(0);
-    glEnableVertexAttribArray(1);
-
-    glMultiDrawElements(GL_TRIANGLES, new int[]{6 * count}, GL_UNSIGNED_INT, PointerBuffer.allocateDirect(count * Long.BYTES));
-
-    glDisableVertexAttribArray(0);
-    glDisableVertexAttribArray(1);
-    glBindBuffer(GL_ARRAY_BUFFER, 0);
-    glBindVertexArray(0);
+    glDrawElements(GL_TRIANGLES, length, GL_UNSIGNED_INT, 0);
   }
 }

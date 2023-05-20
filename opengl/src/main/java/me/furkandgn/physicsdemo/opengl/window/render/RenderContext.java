@@ -1,13 +1,10 @@
 package me.furkandgn.physicsdemo.opengl.window.render;
 
-import me.furkandgn.physicsdemo.common.Body;
-
 /**
  * @author Furkan Doğan
  */
 public class RenderContext {
 
-  private final Class<? extends Body> clazz;
   private int vaoId;
   private int vboId;
   private int eboId;
@@ -15,8 +12,7 @@ public class RenderContext {
   private float[] vertices;
   private boolean refreshBufferData = true;
 
-  public RenderContext(Class<? extends Body> clazz) {
-    this.clazz = clazz;
+  public RenderContext() {
   }
 
   public int vaoId() {
@@ -65,9 +61,5 @@ public class RenderContext {
 
   public void refreshBufferData(boolean refreshBufferData) {
     this.refreshBufferData = refreshBufferData;
-  }
-
-  public Class<? extends Body> clazz() {
-    return this.clazz;
   }
 }

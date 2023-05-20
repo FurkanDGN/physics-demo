@@ -1,21 +1,18 @@
 package me.furkandgn.physicsdemo.opengl.window.render;
 
-import me.furkandgn.physicsdemo.common.Body;
 import me.furkandgn.physicsdemo.opengl.window.component.Component;
 import me.furkandgn.physicsdemo.opengl.window.render.factory.DefaultRenderContextFactory;
 import me.furkandgn.physicsdemo.opengl.window.render.factory.RenderContextFactory;
+import me.furkandgn.physicsdemo.opengl.window.util.ArrayUtil;
 import me.furkandgn.physicsdemo.opengl.window.util.RenderUtil;
 import org.joml.Matrix4f;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.CopyOnWriteArrayList;
 
 import static me.furkandgn.physicsdemo.opengl.Constants.*;
 import static org.lwjgl.opengl.GL30.*;
-import static org.lwjgl.opengl.GL30.glBindVertexArray;
 
 /**
  * @author Furkan Doğan
@@ -25,9 +22,8 @@ public class RenderBatch {
   private final int maxBatchSize;
   private final Matrix4f viewMatrix;
   private final Matrix4f projectionMatrix;
-  private final Map<Class<?>, RenderContext> renderContexts;
-  private final Map<Class<? extends Body>, List<Component>> components;
-  private final RenderContextFactory renderContextFactory;
+  private final RenderContext renderContext;
+  private final List<Component> components;
 
   public RenderBatch(int maxBatchSize,
                      Matrix4f viewMatrix,
@@ -35,19 +31,26 @@ public class RenderBatch {
     this.maxBatchSize = maxBatchSize;
     this.viewMatrix = viewMatrix;
     this.projectionMatrix = projectionMatrix;
-    this.renderContexts = new ConcurrentHashMap<>();
-    this.components = new ConcurrentHashMap<>();
-    this.renderContextFactory = new DefaultRenderContextFactory();
+    this.components = new ArrayList<>();
+    RenderContextFactory renderContextFactory = new DefaultRenderContextFactory();
+    this.renderContext = renderContextFactory.createRenderContext();
   }
 
   public void add(Component component) {
-    Class<? extends Body> clazz = component.body().getClass();
-    this.components.computeIfAbsent(clazz, key -> new CopyOnWriteArrayList<>()).add(component);
-    this.initComponent(component);
+    this.components.add(component);
+    this.updateRenderContext();
   }
 
   public void update() {
-    this.components.forEach(this::updateComponents);
+    for (int i = 0; i < this.components.size(); i++) {
+      Component component = this.components.get(i);
+      if (component.shouldDestroy()) {
+        this.components.remove(component);
+        this.updateDraw();
+      } else if (component.shouldUpdate()) {
+        this.updateDraw();
+      }
+    }
   }
 
   public void render() {
@@ -55,123 +58,105 @@ public class RenderBatch {
   }
 
   public boolean hasRoom() {
-    return this.components.values()
-      .stream()
-      .mapToInt(List::size)
-      .sum() < this.maxBatchSize;
+    return this.components.size() < this.maxBatchSize;
   }
 
-  private void updateComponents(Class<? extends Body> bodyClass, List<Component> components) {
-    RenderContext renderContext = this.renderContexts.get(bodyClass);
-
-    for (int i = 0; i < components.size(); i++) {
-      Component component = components.get(i);
-      this.checkUpdateComponent(component, renderContext, i);
-      this.checkShouldDelete(components, component, i);
-    }
+  private void updateDraw() {
+    this.updateVertices();
+    this.updateIndices();
+    this.renderContext.refreshBufferData(true);
   }
 
-  private void checkShouldDelete(List<Component> components, Component component, int i) {
-    if (component.shouldDestroy()) {
-      this.deleteVertices(component, i);
-      components.remove(component);
-    }
-  }
-
-  private void checkUpdateComponent(Component component, RenderContext renderContext, int i) {
-    if (component.shouldUpdate()) {
-      this.upsertVertices(component, renderContext, i);
-      renderContext.refreshBufferData(true);
-    }
+  private void updateRenderContext() {
+    this.updateVertices();
+    this.updateIndices();
+    this.setupGl();
   }
 
   private void renderComponents() {
-    this.renderContexts.values().forEach(renderContext -> {
-      if (renderContext.refreshBufferData()) {
-        this.refreshBuffer(renderContext);
-      }
+    if (this.renderContext.refreshBufferData()) {
+      this.refreshBuffer();
+    }
 
-      Class<? extends Body> bodyClass = renderContext.clazz();
-      int count = this.components.get(bodyClass).size();
-      RenderUtil.render(bodyClass, renderContext, this.viewMatrix, this.projectionMatrix, count);
-    });
-  }
-
-  private void initComponent(Component component) {
-    Class<? extends Body> bodyClass = component.body().getClass();
-    int index = this.components.get(bodyClass).size() - 1;
-    RenderContext renderContext = this.createRenderContext(component, index);
-    this.updateRenderContext(component, renderContext, index);
-  }
-
-  private RenderContext createRenderContext(Component component, int index) {
-    Class<? extends Body> bodyClass = component.body().getClass();
-    return this.renderContexts.computeIfAbsent(bodyClass, key -> this.renderContextFactory.createRenderContext(component, index));
-  }
-
-  private void updateRenderContext(Component component, RenderContext renderContext, int index) {
-    this.upsertVertices(component, renderContext, index);
-    this.insertIndices(component, renderContext);
-    this.setupGl(renderContext);
-  }
-
-  private void setupGl(RenderContext renderContext) {
-    this.setupVertexArray(renderContext);
-    this.setupVertexBuffer(renderContext);
-    this.setupElementBuffer(renderContext);
-    this.refreshBuffer(renderContext);
+    RenderUtil.render(this.renderContext, this.viewMatrix, this.projectionMatrix);
     this.unbindVertexArrayAndBuffers();
   }
 
-  private void deleteVertices(Component component, int index) {
-    Class<? extends Body> key = component.body().getClass();
-    RenderContext renderContext = this.renderContexts.get(key);
-    float[] vertices = renderContext.vertices();
-    int dotCount = component.dotCount();
+  private void updateVertices() {
+    List<Float> floats = new ArrayList<>();
+    for (Component component : this.components) {
+      float[] vertices = component.verticesFactory().createVertices();
+      for (float vertex : vertices) {
+        floats.add(vertex);
+      }
+    }
 
-    int fromIndex = index * dotCount * VERTEX_SIZE;
-    int toIndex = index * dotCount * VERTEX_SIZE + (VERTEX_SIZE * dotCount);
-    Arrays.fill(vertices, fromIndex, toIndex, 0);
-    System.arraycopy(vertices, toIndex, vertices, fromIndex, vertices.length - toIndex);
+    float[] vertices = this.renderContext.vertices();
+    float[] currentVertices = ArrayUtil.floatListToArray(floats);
 
-    renderContext.vertices(vertices);
+    if (currentVertices.length > vertices.length) {
+      vertices = Arrays.copyOf(vertices, currentVertices.length);
+    }
+
+    System.arraycopy(currentVertices, 0, vertices, 0, currentVertices.length);
+    if (currentVertices.length < vertices.length) {
+      Arrays.fill(vertices, currentVertices.length, vertices.length, 0);
+    }
+
+    this.renderContext.vertices(vertices);
   }
 
-  private void refreshBuffer(RenderContext renderContext) {
-    glBindBuffer(GL_ARRAY_BUFFER, renderContext.vboId());
-    float[] vertices = renderContext.vertices();
+  private void updateIndices() {
+    int[] indices = this.renderContext.indices();
+    int offset = 0;
+    int previousDotCount = 0;
+
+    for (Component component : this.components) {
+      int[] componentIndices = component.indicesFactory().createIndices(component.body());
+
+      if (componentIndices.length + offset > indices.length) {
+        indices = Arrays.copyOf(indices, indices.length + componentIndices.length);
+      }
+
+      for (int i = 0; i < componentIndices.length; i++) {
+        indices[offset + i] = componentIndices[i] + previousDotCount;
+      }
+
+      offset += componentIndices.length;
+      previousDotCount += component.dotCount();
+    }
+
+    if (offset < indices.length) {
+      Arrays.fill(indices, offset, indices.length, 0);
+    }
+
+    this.renderContext.indices(indices);
+  }
+
+  private void setupGl() {
+    this.setupVertexArray(this.renderContext);
+    this.setupVertexBuffer(this.renderContext);
+    this.setupElementBuffer(this.renderContext);
+
+    this.refreshBuffer();
+    this.unbindVertexArrayAndBuffers();
+  }
+
+  private void refreshBuffer() {
+    float[] vertices = this.renderContext.vertices();
+    int[] indices = this.renderContext.indices();
+    int vboId = this.renderContext.vboId();
+    int eboId = this.renderContext.eboId();
+
+    this.setupVertexArray(this.renderContext);
+
+    glBindBuffer(GL_ARRAY_BUFFER, vboId);
     glBufferSubData(GL_ARRAY_BUFFER, 0, vertices);
-    renderContext.refreshBufferData(false);
-  }
 
-  private void upsertVertices(Component component, RenderContext renderContext, int index) {
-    float[] vertices = renderContext.vertices() != null ? renderContext.vertices() : this.createVerticesArray(component);
-    component.verticesFactory().createVertices(vertices, index);
-    renderContext.vertices(vertices);
-  }
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, eboId);
+    glBufferSubData(GL_ELEMENT_ARRAY_BUFFER, 0, indices);
 
-  private void insertIndices(Component component, RenderContext renderContext) {
-    int[] indices = this.createIndicesArray(component);
-    renderContext.indices(indices);
-  }
-
-  private void setupVertexBuffer(RenderContext renderContext) {
-    int vboID = renderContext.vboId();
-    float[] vertices = renderContext.vertices();
-
-    glBindBuffer(GL_ARRAY_BUFFER, vboID);
-    glBufferData(GL_ARRAY_BUFFER, (long) vertices.length * Float.BYTES, GL_DYNAMIC_DRAW);
-  }
-
-  private void setupElementBuffer(RenderContext renderContext) {
-    int eboID = renderContext.eboId();
-    int[] indices = renderContext.indices();
-
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, eboID);
-    glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices, GL_STATIC_DRAW);
-
-    glVertexAttribPointer(0, POS_SIZE, GL_FLOAT, false, VERTEX_SIZE_BYTES, POS_OFFSET);
-    glVertexAttribPointer(1, COLOR_SIZE, GL_FLOAT, false, VERTEX_SIZE_BYTES, COLOR_OFFSET);
+    this.renderContext.refreshBufferData(false);
   }
 
   private void setupVertexArray(RenderContext renderContext) {
@@ -179,19 +164,28 @@ public class RenderBatch {
     glBindVertexArray(vaoID);
   }
 
+  private void setupVertexBuffer(RenderContext renderContext) {
+    int vboID = renderContext.vboId();
+    float[] vertices = renderContext.vertices();
+
+    glBindBuffer(GL_ARRAY_BUFFER, vboID);
+    glBufferData(GL_ARRAY_BUFFER, (long) this.maxBatchSize * vertices.length * Float.BYTES, GL_DYNAMIC_DRAW);
+  }
+
+  private void setupElementBuffer(RenderContext renderContext) {
+    int eboID = renderContext.eboId();
+    int[] indices = renderContext.indices();
+
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, eboID);
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, (long) Integer.BYTES * indices.length * this.maxBatchSize, GL_DYNAMIC_DRAW);
+
+    glVertexAttribPointer(0, POS_SIZE, GL_FLOAT, false, VERTEX_SIZE_BYTES, POS_OFFSET);
+    glVertexAttribPointer(1, COLOR_SIZE, GL_FLOAT, false, VERTEX_SIZE_BYTES, COLOR_OFFSET);
+  }
+
   private void unbindVertexArrayAndBuffers() {
     glBindVertexArray(0);
     glBindBuffer(GL_ARRAY_BUFFER, 0);
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
-  }
-
-  private int[] createIndicesArray(Component component) {
-    Class<? extends Body> bodyClass = component.body().getClass();
-    int count = this.components.get(bodyClass).size();
-    return component.indicesFactory().createIndices(this.maxBatchSize, count);
-  }
-
-  private float[] createVerticesArray(Component component) {
-    return new float[this.maxBatchSize * component.dotCount() * VERTEX_SIZE];
   }
 }

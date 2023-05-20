@@ -1,7 +1,5 @@
 package me.furkandgn.physicsdemo.opengl.window.render.factory;
 
-import me.furkandgn.physicsdemo.common.Body;
-import me.furkandgn.physicsdemo.opengl.window.component.Component;
 import me.furkandgn.physicsdemo.opengl.window.render.RenderContext;
 
 import static org.lwjgl.opengl.GL15.glGenBuffers;
@@ -13,10 +11,11 @@ import static org.lwjgl.opengl.GL30.glGenVertexArrays;
 public class DefaultRenderContextFactory implements RenderContextFactory {
 
   @Override
-  public RenderContext createRenderContext(Component component, int index) {
-    Class<? extends Body> bodyClass = component.body().getClass();
-    RenderContext renderContext = new RenderContext(bodyClass);
+  public RenderContext createRenderContext() {
+    RenderContext renderContext = new RenderContext();
     this.assignIds(renderContext);
+    renderContext.vertices(new float[]{});
+    renderContext.indices(new int[]{});
     return renderContext;
   }
 
