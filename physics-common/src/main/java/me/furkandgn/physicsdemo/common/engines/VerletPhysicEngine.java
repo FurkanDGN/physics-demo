@@ -3,6 +3,7 @@ package me.furkandgn.physicsdemo.common.engines;
 import me.furkandgn.physicsdemo.common.*;
 import org.joml.Vector2d;
 
+import java.util.Collections;
 import java.util.List;
 
 import static me.furkandgn.physicsdemo.common.constants.PhysicConstants.GRAVITY_FORCE;
@@ -24,7 +25,7 @@ public class VerletPhysicEngine implements PhysicEngine {
   @Override
   public void evaluate(List<Body> bodies, double dt) {
     bodies.forEach(body -> this.update(body, dt));
-    List<CollisionEvent> collisions = this.collisionDetector.findCollisions(bodies);
+    List<CollisionEvent> collisions = this.collisionDetector != null ? this.collisionDetector.findCollisions(bodies) : Collections.emptyList();
     this.collisionSolver.solveCollisions(collisions);
   }
 
@@ -36,7 +37,7 @@ public class VerletPhysicEngine implements PhysicEngine {
     Vector2d force = body.force();
     Vector2d velocity = body.velocity();
 
-    double timeStep = dt * 20;
+    double timeStep = dt / 10;
     Vector2d virtualPrevPosition = new Vector2d(position).sub(velocity.mul(timeStep, new Vector2d()));
 
     this.apply(position, virtualPrevPosition, acceleration, force, timeStep);
