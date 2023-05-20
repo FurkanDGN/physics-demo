@@ -11,15 +11,16 @@ import org.joml.Vector4f;
  */
 public class CircleBody extends ColoredBody {
 
+  private static final int DISTANCE = 6;
+
   private final int radius;
 
   public CircleBody(int radius,
                     float mass,
                     int x,
                     int y,
-                    int cornerCount,
                     Vector4f color) {
-    super(ShapeUtils.createCirclePoints(radius, cornerCount), Transform.of(new Vector2d(x, y), new Vector2d(1, 1)), mass, color);
+    super(ShapeUtils.createCirclePoints(radius, (int) Math.round((2 * Math.PI * radius) / DISTANCE)), Transform.of(new Vector2d(x, y), new Vector2d(1, 1)), mass, color);
     this.radius = radius;
   }
 
