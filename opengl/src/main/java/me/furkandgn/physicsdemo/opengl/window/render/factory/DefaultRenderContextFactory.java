@@ -14,8 +14,6 @@ public class DefaultRenderContextFactory implements RenderContextFactory {
   public RenderContext createRenderContext() {
     RenderContext renderContext = new RenderContext();
     this.assignIds(renderContext);
-    renderContext.vertices(new float[]{});
-    renderContext.indices(new int[]{});
     return renderContext;
   }
 

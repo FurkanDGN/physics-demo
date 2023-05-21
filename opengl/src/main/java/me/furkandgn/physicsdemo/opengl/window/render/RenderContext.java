@@ -5,12 +5,11 @@ package me.furkandgn.physicsdemo.opengl.window.render;
  */
 public class RenderContext {
 
-  private int vaoId;
-  private int vboId;
-  private int eboId;
-  private int[] indices;
-  private float[] vertices;
-  private boolean refreshBufferData = true;
+  private volatile int vaoId;
+  private volatile int vboId;
+  private volatile int eboId;
+  private volatile int[] indices;
+  private volatile float[] vertices;
 
   public RenderContext() {
   }
@@ -53,13 +52,5 @@ public class RenderContext {
 
   public void vertices(float[] vertices) {
     this.vertices = vertices;
-  }
-
-  public boolean refreshBufferData() {
-    return this.refreshBufferData;
-  }
-
-  public void refreshBufferData(boolean refreshBufferData) {
-    this.refreshBufferData = refreshBufferData;
   }
 }

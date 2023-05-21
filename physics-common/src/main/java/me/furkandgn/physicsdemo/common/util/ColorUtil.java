@@ -1,4 +1,4 @@
-package me.furkandgn.physicsdemo.opengl.window.util;
+package me.furkandgn.physicsdemo.common.util;
 
 import org.joml.Vector4f;
 

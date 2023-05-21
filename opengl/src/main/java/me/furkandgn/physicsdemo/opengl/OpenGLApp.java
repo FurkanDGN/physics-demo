@@ -1,7 +1,9 @@
 package me.furkandgn.physicsdemo.opengl;
 
+import me.furkandgn.physicsdemo.common.CollisionDetector;
 import me.furkandgn.physicsdemo.common.CollisionSolver;
 import me.furkandgn.physicsdemo.common.PhysicEngine;
+import me.furkandgn.physicsdemo.common.collision.GJK;
 import me.furkandgn.physicsdemo.common.engines.VerletPhysicEngine;
 import me.furkandgn.physicsdemo.common.gui.AppWindow;
 import me.furkandgn.physicsdemo.common.gui.World;
@@ -23,7 +25,8 @@ public class OpenGLApp {
   public static void main(String[] args) {
     Camera camera = new Camera(new Vector2f(0, 0));
     CollisionSolver collisionSolver = new DefaultCollisionSolver();
-    PhysicEngine physicEngine = new VerletPhysicEngine(null, collisionSolver);
+    CollisionDetector collisionDetector = new GJK();
+    PhysicEngine physicEngine = new VerletPhysicEngine(collisionDetector, collisionSolver);
     World world = new SimulationWorld(physicEngine, camera, HEIGHT);
     AppListener appListener = new DefaultAppListener(world);
 

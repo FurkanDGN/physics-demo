@@ -1,6 +1,7 @@
 package me.furkandgn.physicsdemo.common.util;
 
 import me.furkandgn.physicsdemo.common.Point;
+import me.furkandgn.physicsdemo.common.body.attribute.Transform;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -16,10 +17,10 @@ public class ShapeUtils {
     int halfWidth = (int) Math.round(width / 2.0);
     int halfHeight = (int) Math.round(height / 2.0);
 
-    points.add(Point.of(-halfWidth, -halfHeight));
-    points.add(Point.of(halfWidth, -halfHeight));
-    points.add(Point.of(halfWidth, halfHeight));
-    points.add(Point.of(-halfWidth, halfHeight));
+    points.add(Point.of(-halfWidth, -halfHeight)); // Left bottom
+    points.add(Point.of(-halfWidth, halfHeight));  // Left Top
+    points.add(Point.of(halfWidth, halfHeight));   // Right Top
+    points.add(Point.of(halfWidth, -halfHeight));  // Right bottom
 
     return points;
   }
@@ -31,11 +32,24 @@ public class ShapeUtils {
     double angleStep = 2 * Math.PI / pointCount;
 
     for (int i = 0; i < pointCount; i++) {
-      float pointX = (float) (radius * Math.cos(i * angleStep));
-      float pointY = (float) (radius * Math.sin(i * angleStep));
+      double pointX = radius * Math.cos(i * angleStep);
+      double pointY = radius * Math.sin(i * angleStep);
       points.add(Point.of(pointX, pointY));
     }
 
     return points;
+  }
+
+  public static List<Point> transformPoints(List<Point> points, Transform transform) {
+    float rotation = transform.rotation();
+
+    return points.stream()
+      .map(point -> {
+        double rotatedX = point.x() * Math.cos(rotation) - point.y() * Math.sin(rotation);
+        double rotatedY = point.x() * Math.sin(rotation) + point.y() * Math.cos(rotation);
+
+        return new Point((transform.position().x + rotatedX) * transform.scale().x, (transform.position().y + rotatedY) * transform.scale().y);
+      })
+      .toList();
   }
 }

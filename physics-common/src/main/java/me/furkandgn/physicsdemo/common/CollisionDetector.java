@@ -1,11 +1,12 @@
 package me.furkandgn.physicsdemo.common;
 
 import java.util.List;
+import java.util.Set;
 
 /**
  * @author Furkan Doğan
  */
 public interface CollisionDetector {
 
-  List<CollisionEvent> findCollisions(List<Body> bodies);
+  Set<CollisionEvent> findCollisions(List<Body> bodies);
 }

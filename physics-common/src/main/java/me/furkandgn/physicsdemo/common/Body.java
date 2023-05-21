@@ -1,6 +1,7 @@
 package me.furkandgn.physicsdemo.common;
 
 import me.furkandgn.physicsdemo.common.body.attribute.Transform;
+import me.furkandgn.physicsdemo.common.util.ShapeUtils;
 import org.joml.Vector2d;
 
 import java.util.List;
@@ -48,6 +49,10 @@ public abstract class Body {
 
   public List<Point> points() {
     return this.points;
+  }
+
+  public List<Point> transformedPoints() {
+    return ShapeUtils.transformPoints(this.points, this.transform);
   }
 
   public double x() {

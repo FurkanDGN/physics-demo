@@ -14,6 +14,7 @@ import org.lwjgl.glfw.Callbacks;
 import java.util.Objects;
 import java.util.concurrent.locks.LockSupport;
 
+import static me.furkandgn.physicsdemo.common.util.TimeUtil.MILLISECOND_TO_NANOS;
 import static me.furkandgn.physicsdemo.common.util.TimeUtil.SECOND_TO_NANOS;
 import static me.furkandgn.physicsdemo.opengl.Constants.FPS_LIMIT;
 import static me.furkandgn.physicsdemo.opengl.Constants.FPS_TIME_OFFSET;
@@ -85,11 +86,20 @@ public class OpenGlAppWindow implements AppWindow {
     }
   }
 
+  double tickTime = 0;
+  double renderTime = 0;
+
   private void update() {
     double dtInDouble = this.dt / SECOND_TO_NANOS;
+    long now = System.nanoTime();
     this.scene.tick(dtInDouble);
+    long last = System.nanoTime();
     this.appListener.onTick();
+    this.tickTime = (last - now) / MILLISECOND_TO_NANOS;
+    now = System.nanoTime();
     this.scene.render(dtInDouble);
+    last = System.nanoTime();
+    this.renderTime = (last - now) / MILLISECOND_TO_NANOS;
     this.countFrame();
   }
 
@@ -143,7 +153,7 @@ public class OpenGlAppWindow implements AppWindow {
     if (this.firstRender == 0) {
       this.firstRender = System.currentTimeMillis();
     } else if (this.firstRender <= System.currentTimeMillis() - 1000) {
-      System.out.println("FPS: " + this.frameCount);
+      System.out.println("FPS: " + this.frameCount + " (tick time: " + this.tickTime + ", render time: " + this.renderTime + ")");
       this.firstRender = System.currentTimeMillis();
       this.frameCount = 0;
     }

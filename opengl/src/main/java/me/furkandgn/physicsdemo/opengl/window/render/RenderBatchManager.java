@@ -26,7 +26,8 @@ public class RenderBatchManager {
   }
 
   public void add(Component component) {
-    RenderBatch renderBatch = this.availableRenderBatch();
+    int dotCount = component.dotCount();
+    RenderBatch renderBatch = this.availableRenderBatch(dotCount);
     renderBatch.add(component);
   }
 
@@ -42,9 +43,9 @@ public class RenderBatchManager {
     }
   }
 
-  private RenderBatch availableRenderBatch() {
+  private RenderBatch availableRenderBatch(int dotCount) {
     for (RenderBatch renderBatch : this.renderBatches) {
-      if (!renderBatch.hasRoom()) continue;
+      if (!renderBatch.hasRoom(dotCount)) continue;
       return renderBatch;
     }
 

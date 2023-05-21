@@ -8,10 +8,10 @@ import org.joml.Vector4f;
  */
 public class FlatSurfaceBody extends RectBody {
 
-  public FlatSurfaceBody(int width,
-                         int height,
-                         int x,
+  public FlatSurfaceBody(int x,
                          int y,
+                         int width,
+                         int height,
                          Vector4f color) {
     super(width, height, 0, x, y, color);
   }

@@ -27,6 +27,7 @@ public class PolygonVerticesFactory implements VerticesFactory {
   @Override
   public float[] createVertices() {
     Vector2d scale = this.body.transform().scale();
+    float rotation = this.body.transform().rotation();
     List<Point> points = this.body.points();
 
     float[] vertices = new float[points.size() * VERTEX_SIZE];
@@ -35,8 +36,11 @@ public class PolygonVerticesFactory implements VerticesFactory {
       Point point = points.get(i);
       int start = i * VERTEX_SIZE;
 
-      vertices[start] = (float) ((point.x() + this.body.x()) * scale.x);
-      vertices[start + 1] = this.windowHeight - (float) ((this.body.y() + point.y()) * scale.y);
+      double rotatedX = point.x() * Math.cos(rotation) - point.y() * Math.sin(rotation);
+      double rotatedY = point.x() * Math.sin(rotation) + point.y() * Math.cos(rotation);
+
+      vertices[start] = (float) ((rotatedX + this.body.x()) * scale.x);
+      vertices[start + 1] = this.windowHeight - (float) ((rotatedY + this.body.y()) * scale.y);
 
       Vector4f color = this.body instanceof ColoredBody coloredBody ? coloredBody.color() : new Vector4f(1f, 1f, 1f, 1f);
 

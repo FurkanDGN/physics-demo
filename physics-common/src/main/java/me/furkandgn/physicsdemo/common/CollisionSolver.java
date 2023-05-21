@@ -1,11 +1,11 @@
 package me.furkandgn.physicsdemo.common;
 
-import java.util.List;
+import java.util.Set;
 
 /**
  * @author Furkan Doğan
  */
 public interface CollisionSolver {
 
-  void solveCollisions(List<CollisionEvent> collisions);
+  void solveCollisions(Set<CollisionEvent> collisions);
 }

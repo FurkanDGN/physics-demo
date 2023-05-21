@@ -8,9 +8,9 @@ public class Constants {
   public static final int FPS_LIMIT = 60;
   public static final int FPS_TIME_OFFSET = 7500;
 
-  public static final int SAMPLING = 8;
+  public static final int SAMPLING = 4;
 
-  public static final int MAX_BATCH_SIZE = 10;
+  public static final int MAX_BATCH_SIZE = 30;
 
   public static final int POS_SIZE = 2;
   public static final int COLOR_SIZE = 4;

@@ -3,13 +3,10 @@ package me.furkandgn.physicsdemo.opengl.window.render;
 import me.furkandgn.physicsdemo.opengl.window.component.Component;
 import me.furkandgn.physicsdemo.opengl.window.render.factory.DefaultRenderContextFactory;
 import me.furkandgn.physicsdemo.opengl.window.render.factory.RenderContextFactory;
-import me.furkandgn.physicsdemo.opengl.window.util.ArrayUtil;
 import me.furkandgn.physicsdemo.opengl.window.util.RenderUtil;
 import org.joml.Matrix4f;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 
 import static me.furkandgn.physicsdemo.opengl.Constants.*;
 import static org.lwjgl.opengl.GL30.*;
@@ -23,7 +20,13 @@ public class RenderBatch {
   private final Matrix4f viewMatrix;
   private final Matrix4f projectionMatrix;
   private final RenderContext renderContext;
-  private final List<Component> components;
+  private final Component[] components;
+  private final Queue<Component> addQueue;
+  private final Queue<Integer> emptyIndexes;
+
+  private int dotCount;
+  private int componentCount;
+  private volatile boolean refreshBufferData;
 
   public RenderBatch(int maxBatchSize,
                      Matrix4f viewMatrix,
@@ -31,114 +34,114 @@ public class RenderBatch {
     this.maxBatchSize = maxBatchSize;
     this.viewMatrix = viewMatrix;
     this.projectionMatrix = projectionMatrix;
-    this.components = new ArrayList<>();
+    this.components = new Component[this.maxBatchSize];
+    this.addQueue = new LinkedList<>();
+    this.emptyIndexes = new LinkedList<>();
+    for (int i = 0; i < this.maxBatchSize; i++) {
+      this.emptyIndexes.add(i);
+    }
     RenderContextFactory renderContextFactory = new DefaultRenderContextFactory();
     this.renderContext = renderContextFactory.createRenderContext();
   }
 
   public void add(Component component) {
-    this.components.add(component);
-    this.updateRenderContext();
+    this.addQueue.add(component);
+
+    if (this.dotCount == 0) {
+      this.dotCount = component.dotCount();
+      this.initRenderContext();
+    }
   }
 
   public void update() {
-    for (int i = 0; i < this.components.size(); i++) {
-      Component component = this.components.get(i);
-      if (component.shouldDestroy()) {
-        this.components.remove(component);
-        this.updateDraw();
-      } else if (component.shouldUpdate()) {
-        this.updateDraw();
-      }
-    }
+    this.solveAddQueue();
+    this.updateComponents();
   }
 
   public void render() {
     this.renderComponents();
   }
 
-  public boolean hasRoom() {
-    return this.components.size() < this.maxBatchSize;
+  public boolean hasRoom(int dotCount) {
+    int totalSize = this.componentCount + this.addQueue.size();
+    return totalSize < this.maxBatchSize &&
+      (this.dotCount == dotCount || this.dotCount == 0);
   }
 
-  private void updateDraw() {
-    this.updateVertices();
-    this.updateIndices();
-    this.renderContext.refreshBufferData(true);
+  private void updateComponents() {
+    for (int i = 0; i < this.componentCount; i++) {
+      Component component = this.components[i];
+      if (component == null) continue;
+      this.updateComponent(component, i);
+    }
   }
 
-  private void updateRenderContext() {
-    this.updateVertices();
-    this.updateIndices();
-    this.setupGl();
+  private void updateComponent(Component component, int index) {
+    if (component.shouldUpdate()) {
+      this.updateVertices(component, index);
+      this.refreshBufferData = true;
+    } else if (component.shouldDestroy()) {
+      this.deleteComponent(index);
+      this.refreshBufferData = true;
+    }
   }
 
-  private void renderComponents() {
-    if (this.renderContext.refreshBufferData()) {
+  private void solveAddQueue() {
+    int size = this.addQueue.size();
+    for (int i = 0; i < size; i++) {
+      Component component = this.addQueue.poll();
+      Integer index = this.emptyIndexes.poll();
+      if (component == null || index == null) {
+        throw new RuntimeException("component == null || index == null");
+      }
+
+      this.components[index] = component;
+      this.componentCount++;
+
+      this.updateVertices(component, index);
+      this.updateIndices(component, index);
+
       this.refreshBuffer();
     }
-
-    RenderUtil.render(this.renderContext, this.viewMatrix, this.projectionMatrix);
-    this.unbindVertexArrayAndBuffers();
   }
 
-  private void updateVertices() {
-    List<Float> floats = new ArrayList<>();
-    for (Component component : this.components) {
-      float[] vertices = component.verticesFactory().createVertices();
-      for (float vertex : vertices) {
-        floats.add(vertex);
-      }
-    }
-
+  private void updateVertices(Component component, int index) {
     float[] vertices = this.renderContext.vertices();
-    float[] currentVertices = ArrayUtil.floatListToArray(floats);
+    int fromIndex = index * this.dotCount * VERTEX_SIZE;
+    float[] componentVertices = component.verticesFactory().createVertices();
 
-    if (currentVertices.length > vertices.length) {
-      vertices = Arrays.copyOf(vertices, currentVertices.length);
-    }
-
-    System.arraycopy(currentVertices, 0, vertices, 0, currentVertices.length);
-    if (currentVertices.length < vertices.length) {
-      Arrays.fill(vertices, currentVertices.length, vertices.length, 0);
-    }
-
+    System.arraycopy(componentVertices, 0, vertices, fromIndex, componentVertices.length);
     this.renderContext.vertices(vertices);
   }
 
-  private void updateIndices() {
+  private void updateIndices(Component component, int index) {
     int[] indices = this.renderContext.indices();
-    int offset = 0;
-    int previousDotCount = 0;
+    int[] componentIndices = component.indicesFactory().createIndices(component.body());
+    int offset = componentIndices.length * index;
 
-    for (Component component : this.components) {
-      int[] componentIndices = component.indicesFactory().createIndices(component.body());
-
-      if (componentIndices.length + offset > indices.length) {
-        indices = Arrays.copyOf(indices, indices.length + componentIndices.length);
-      }
-
-      for (int i = 0; i < componentIndices.length; i++) {
-        indices[offset + i] = componentIndices[i] + previousDotCount;
-      }
-
-      offset += componentIndices.length;
-      previousDotCount += component.dotCount();
-    }
-
-    if (offset < indices.length) {
-      Arrays.fill(indices, offset, indices.length, 0);
+    for (int i = 0; i < componentIndices.length; i++) {
+      indices[offset + i] = componentIndices[i] + this.dotCount * index;
     }
 
     this.renderContext.indices(indices);
   }
 
-  private void setupGl() {
-    this.setupVertexArray(this.renderContext);
-    this.setupVertexBuffer(this.renderContext);
-    this.setupElementBuffer(this.renderContext);
+  private void deleteComponent(int index) {
+    this.components[index] = null;
+    this.componentCount--;
+    float[] vertices = this.renderContext.vertices();
+    int fromIndex = index * this.dotCount * VERTEX_SIZE;
 
-    this.refreshBuffer();
+    Arrays.fill(vertices, fromIndex, fromIndex + this.dotCount * VERTEX_SIZE, 0);
+    this.emptyIndexes.add(index);
+  }
+
+  private void renderComponents() {
+    if (this.refreshBufferData) {
+      this.refreshBuffer();
+    }
+
+    RenderUtil.render(this.renderContext, this.viewMatrix, this.projectionMatrix);
     this.unbindVertexArrayAndBuffers();
   }
 
@@ -148,7 +151,7 @@ public class RenderBatch {
     int vboId = this.renderContext.vboId();
     int eboId = this.renderContext.eboId();
 
-    this.setupVertexArray(this.renderContext);
+    this.bindVertexArray(this.renderContext);
 
     glBindBuffer(GL_ARRAY_BUFFER, vboId);
     glBufferSubData(GL_ARRAY_BUFFER, 0, vertices);
@@ -156,15 +159,37 @@ public class RenderBatch {
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, eboId);
     glBufferSubData(GL_ELEMENT_ARRAY_BUFFER, 0, indices);
 
-    this.renderContext.refreshBufferData(false);
+    this.refreshBufferData = false;
   }
 
-  private void setupVertexArray(RenderContext renderContext) {
+  private void initRenderContext() {
+    this.initVerticesBuffer();
+    this.initIndicesBuffer();
+    this.initBuffers();
+  }
+
+  private void initBuffers() {
+    this.bindVertexArray(this.renderContext);
+    this.initVertexBuffer(this.renderContext);
+    this.initElementBuffer(this.renderContext);
+  }
+
+  private void initVerticesBuffer() {
+    float[] vertices = this.createVerticesArray();
+    this.renderContext.vertices(vertices);
+  }
+
+  private void initIndicesBuffer() {
+    int[] indices = this.createIndicesArray();
+    this.renderContext.indices(indices);
+  }
+
+  private void bindVertexArray(RenderContext renderContext) {
     int vaoID = renderContext.vaoId();
     glBindVertexArray(vaoID);
   }
 
-  private void setupVertexBuffer(RenderContext renderContext) {
+  private void initVertexBuffer(RenderContext renderContext) {
     int vboID = renderContext.vboId();
     float[] vertices = renderContext.vertices();
 
@@ -172,12 +197,12 @@ public class RenderBatch {
     glBufferData(GL_ARRAY_BUFFER, (long) this.maxBatchSize * vertices.length * Float.BYTES, GL_DYNAMIC_DRAW);
   }
 
-  private void setupElementBuffer(RenderContext renderContext) {
+  private void initElementBuffer(RenderContext renderContext) {
     int eboID = renderContext.eboId();
     int[] indices = renderContext.indices();
 
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, eboID);
-    glBufferData(GL_ELEMENT_ARRAY_BUFFER, (long) Integer.BYTES * indices.length * this.maxBatchSize, GL_DYNAMIC_DRAW);
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, (long) this.maxBatchSize * indices.length * Integer.BYTES, GL_STATIC_DRAW);
 
     glVertexAttribPointer(0, POS_SIZE, GL_FLOAT, false, VERTEX_SIZE_BYTES, POS_OFFSET);
     glVertexAttribPointer(1, COLOR_SIZE, GL_FLOAT, false, VERTEX_SIZE_BYTES, COLOR_OFFSET);
@@ -187,5 +212,13 @@ public class RenderBatch {
     glBindVertexArray(0);
     glBindBuffer(GL_ARRAY_BUFFER, 0);
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+  }
+
+  private float[] createVerticesArray() {
+    return new float[this.maxBatchSize * this.dotCount * VERTEX_SIZE];
+  }
+
+  private int[] createIndicesArray() {
+    return new int[this.maxBatchSize * this.dotCount * 3];
   }
 }
