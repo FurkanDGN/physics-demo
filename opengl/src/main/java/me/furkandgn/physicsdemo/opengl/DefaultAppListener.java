@@ -53,7 +53,7 @@ public class DefaultAppListener implements AppListener {
     Body body = this.circleBody(x);
     Random random = new Random();
 //    body.velocity().add(100, 0);
-//    body.velocity().add(100 - random.nextInt(200), 100 - random.nextInt(200));
+    body.velocity().add(100 - random.nextInt(200), 100 - random.nextInt(200));
 //    body.force(new Vector2d(0, 200));
     world.addBody(body);
   }

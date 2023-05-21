@@ -95,11 +95,11 @@ public class OpenGlAppWindow implements AppWindow {
     this.scene.tick(dtInDouble);
     long last = System.nanoTime();
     this.appListener.onTick();
-    this.tickTime = (last - now) / MILLISECOND_TO_NANOS;
+    this.tickTime += (last - now) / MILLISECOND_TO_NANOS;
     now = System.nanoTime();
     this.scene.render(dtInDouble);
     last = System.nanoTime();
-    this.renderTime = (last - now) / MILLISECOND_TO_NANOS;
+    this.renderTime += (last - now) / MILLISECOND_TO_NANOS;
     this.countFrame();
   }
 
@@ -153,9 +153,11 @@ public class OpenGlAppWindow implements AppWindow {
     if (this.firstRender == 0) {
       this.firstRender = System.currentTimeMillis();
     } else if (this.firstRender <= System.currentTimeMillis() - 1000) {
-      System.out.println("FPS: " + this.frameCount + " (tick time: " + this.tickTime + ", render time: " + this.renderTime + ")");
+      System.out.printf("FPS: %s \t total tick time: %.2f (%.2f) \t total render time: %.2f (%.2f)%n", this.frameCount, this.tickTime, this.tickTime / this.frameCount, this.renderTime, this.renderTime / this.frameCount);
       this.firstRender = System.currentTimeMillis();
       this.frameCount = 0;
+      this.tickTime = 0;
+      this.renderTime = 0;
     }
 
     this.frameCount++;
