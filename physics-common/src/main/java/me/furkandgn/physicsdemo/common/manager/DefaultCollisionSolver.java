@@ -79,7 +79,7 @@ public class DefaultCollisionSolver implements CollisionSolver {
     if (y - radius <= y1 + rectHeight / 2d && y + radius > y1 + rectHeight) {
       Vector2d velocity = movingCircle.velocity();
       velocity.y = Math.abs(velocity.y);
-      movingCircle.force().y = -PhysicConstants.GRAVITY_FORCE;
+      movingCircle.force().y = -PhysicConstants.GRAVITY_FORCE * 0.9;
     }
   }
 }
