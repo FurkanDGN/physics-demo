@@ -97,10 +97,8 @@ public class RenderBatch {
 
       this.components[index] = component;
       this.componentCount++;
-
       this.updateVertices(component, index);
       this.updateIndices(component, index);
-
       this.refreshBuffer();
     }
   }
