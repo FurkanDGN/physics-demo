@@ -25,7 +25,6 @@ import java.util.Set;
  */
 public class GJK implements CollisionDetector {
 
-
   @Override
   public Set<CollisionEvent> findCollisions(List<Body> bodies) {
     Set<CollisionEvent> collisionEvents = new HashSet<>();

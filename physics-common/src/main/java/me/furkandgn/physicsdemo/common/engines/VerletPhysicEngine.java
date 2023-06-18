@@ -14,6 +14,8 @@ import static me.furkandgn.physicsdemo.common.constants.PhysicConstants.GRAVITY_
  */
 public class VerletPhysicEngine implements PhysicEngine {
 
+  private static final int SUB_STEPS = 10;
+
   private final CollisionDetector collisionDetector;
   private final CollisionSolver collisionSolver;
 
@@ -25,10 +27,12 @@ public class VerletPhysicEngine implements PhysicEngine {
 
   @Override
   public void evaluate(List<Body> bodies, double dt) {
-    bodies.forEach(body -> this.update(body, dt));
-    Set<CollisionEvent> collisions = this.collisionDetector != null ? this.collisionDetector.findCollisions(bodies) : Collections.emptySet();
-    collisions.removeIf(collisionEvent -> collisionEvent.body1().isSurface() && collisionEvent.body2().isSurface());
-    this.collisionSolver.solveCollisions(collisions);
+    for (int i = 0; i < SUB_STEPS; i++) {
+      Set<CollisionEvent> collisions = this.collisionDetector != null ? this.collisionDetector.findCollisions(bodies) : Collections.emptySet();
+      collisions.removeIf(collisionEvent -> collisionEvent.body1().isSurface() && collisionEvent.body2().isSurface());
+      this.collisionSolver.solveCollisions(collisions);
+      bodies.forEach(body -> this.update(body, dt / SUB_STEPS));
+    }
   }
 
   private void update(Body body, double dt) {

@@ -3,6 +3,7 @@ package me.furkandgn.physicsdemo.opengl.window.util;
 import me.furkandgn.physicsdemo.opengl.Constants;
 import org.lwjgl.glfw.GLFWErrorCallback;
 import org.lwjgl.glfw.GLFWVidMode;
+import org.lwjgl.glfw.GLFWWindowFocusCallback;
 import org.lwjgl.opengl.GL;
 import org.lwjgl.system.MemoryStack;
 
@@ -17,7 +18,12 @@ import static org.lwjgl.system.MemoryUtil.NULL;
  */
 public class OpenGlUtil {
 
-  public static long initOpenGl(int width, int height, String title) {
+  public static long initOpenGl(OpenGlOptions openGlOptions) {
+    int width = openGlOptions.width();
+    int height = openGlOptions.height();
+    String title = openGlOptions.title();
+    OpenGlOptions.FocusCallback focusCallback = openGlOptions.focusCallback();
+
     GLFWErrorCallback.createPrint(System.err).set();
 
     if (!glfwInit())
@@ -58,6 +64,8 @@ public class OpenGlUtil {
         );
       }
     }
+
+    GLFWWindowFocusCallback.create((l, b) -> focusCallback.handle(b)).set(window);
 
     glfwMakeContextCurrent(window);
     GL.createCapabilities();

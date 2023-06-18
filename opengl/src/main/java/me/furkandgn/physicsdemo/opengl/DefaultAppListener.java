@@ -5,8 +5,8 @@ import me.furkandgn.physicsdemo.common.body.shapes.CircleBody;
 import me.furkandgn.physicsdemo.common.body.shapes.RectBody;
 import me.furkandgn.physicsdemo.common.body.surfaces.FlatSurfaceBody;
 import me.furkandgn.physicsdemo.common.gui.World;
-import me.furkandgn.physicsdemo.opengl.window.listener.AppListener;
 import me.furkandgn.physicsdemo.common.util.ColorUtil;
+import me.furkandgn.physicsdemo.opengl.window.listener.AppListener;
 import org.joml.Vector4f;
 
 import java.util.Random;
@@ -38,8 +38,8 @@ public class DefaultAppListener implements AppListener {
 
   @Override
   public void onTick() {
-    if (this.lastPut <= System.currentTimeMillis() - 10000000L) {
-      this.spawnBody(this.world, WIDTH - 200);
+    if (this.lastPut <= System.currentTimeMillis() - 3000000) {
+      this.spawnBody(this.world, WIDTH - 600);
       this.lastPut = System.currentTimeMillis();
     }
   }
@@ -52,14 +52,14 @@ public class DefaultAppListener implements AppListener {
   private void spawnBody(World world, int x) {
     Body body = this.circleBody(x);
     Random random = new Random();
-//    body.velocity().add(100, 0);
-    body.velocity().add(100 - random.nextInt(200), 100 - random.nextInt(200));
-//    body.force(new Vector2d(0, 200));
+    int maxSpeed = 20;
+    int minSpeed = -maxSpeed;
+    body.velocity().add(random.nextDouble(minSpeed, maxSpeed), random.nextDouble(minSpeed, maxSpeed));
     world.addBody(body);
   }
 
   private CircleBody circleBody(int x) {
-    int y = 210;
+    int y = 410;
     Vector4f color = ColorUtil.randomColor();
     return new CircleBody(60, 100, x, y, color);
   }
