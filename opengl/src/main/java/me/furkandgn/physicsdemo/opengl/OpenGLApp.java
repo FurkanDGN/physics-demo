@@ -30,7 +30,7 @@ public class OpenGLApp {
     World world = new SimulationWorld(physicEngine, camera, HEIGHT);
     AppListener appListener = new DefaultAppListener(world);
 
-    AppWindow appWindow = new OpenGlAppWindow("Physics Demo", WIDTH, HEIGHT, camera, appListener);
+    AppWindow appWindow = new OpenGlAppWindow("Physics Demo", WIDTH, HEIGHT, appListener);
     appWindow.init(world);
   }
 }

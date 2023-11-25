@@ -10,10 +10,14 @@ import me.furkandgn.physicsdemo.opengl.font.load.FontLoader;
 import me.furkandgn.physicsdemo.opengl.font.load.GlFontLoader;
 import me.furkandgn.physicsdemo.opengl.font.render.FontRenderer;
 import me.furkandgn.physicsdemo.opengl.window.OpenGlAppWindow;
+import org.joml.Matrix4f;
 import org.joml.Vector3f;
 
 import java.io.InputStream;
 import java.util.Objects;
+
+import static me.furkandgn.physicsdemo.common.constants.GuiConstants.HEIGHT;
+import static me.furkandgn.physicsdemo.common.constants.GuiConstants.WIDTH;
 
 /**
  * @author Furkan Doğan
@@ -21,28 +25,29 @@ import java.util.Objects;
 public class SimulationScene implements Scene {
 
   private final World world;
-  private final Camera camera;
 
   private FontRenderer fontRenderer;
 
-  public SimulationScene(World world, Camera camera) {
+  public SimulationScene(World world) {
     this.world = world;
-    this.camera = camera;
   }
 
   @Override
   public void init() {
     FontLoader fontLoader = new GlFontLoader(true);
     InputStream inputStream = Objects.requireNonNull(SimulationScene.class.getResourceAsStream("/fonts/OpenSans-Light.ttf"), "File");
-    FontAtlasInfo fontAtlasInfo = fontLoader.load(inputStream, 22);
-    this.fontRenderer = new FontRenderer(fontAtlasInfo, this.camera.projectionMatrix());
+    FontAtlasInfo fontAtlasInfo = fontLoader.load(inputStream, 42);
+    Matrix4f projectionMatrix = new Matrix4f();
+    projectionMatrix.identity();
+    projectionMatrix.ortho(0, WIDTH, HEIGHT, 0, 0.0f, 1.0f);
+    this.fontRenderer = new FontRenderer(fontAtlasInfo, projectionMatrix);
     this.fontRenderer.init();
   }
 
   @Override
   public void tick(double dt) {
     if (dt != 0) {
-//      this.world.tick(dt);
+      this.world.tick(dt);
     }
   }
 
@@ -56,7 +61,7 @@ public class SimulationScene implements Scene {
     double postTime = OpenGlAppWindow.PERFORMANCE_TRACKER.getAverage(MetricType.POST);
     String text = String.format("FPS: %d     frame time: %.2f     tick time: %.2f     render time: %.2f     pre time: %.2f   post time: %.2f",
       fps, frameTime, tickTime, renderTime, preTime, postTime);
-    this.fontRenderer.render(text, 10, 25, 1f, new Vector3f(1f, 1f, 1f));
-//    this.world.render();
+    this.world.render();
+    this.fontRenderer.render(text, 10, 30, 0.6f, new Vector3f(1f, 1f, 1f));
   }
 }

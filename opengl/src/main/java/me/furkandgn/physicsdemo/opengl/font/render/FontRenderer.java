@@ -115,5 +115,6 @@ public class FontRenderer {
     glDrawArrays(GL_TRIANGLES, 0, 6 * charArray.length);
 
     glDisable(GL_BLEND);
+    this.shader.detach();
   }
 }

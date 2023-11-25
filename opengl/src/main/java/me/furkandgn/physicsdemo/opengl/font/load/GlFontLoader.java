@@ -77,7 +77,7 @@ public class GlFontLoader implements FontLoader {
 
         characters.put(character, fontCharacter);
 
-        offsetX += bitmapWidth;
+        offsetX += bitmapWidth + 1;
         rowHeight = Math.max(rowHeight, bitmapHeight);
       }
 

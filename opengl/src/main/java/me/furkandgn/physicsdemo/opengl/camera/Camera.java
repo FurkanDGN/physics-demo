@@ -26,7 +26,7 @@ public class Camera {
     float worldHeight = worldWidth * HEIGHT / WIDTH;
 
     this.projectionMatrix.identity();
-    this.projectionMatrix.ortho(0, WIDTH, HEIGHT, 0, 0.0f, 1.0f);
+    this.projectionMatrix.ortho(0, worldWidth, worldHeight, 0, 0.0f, 1.0f);
   }
 
   public Matrix4f viewMatrix() {

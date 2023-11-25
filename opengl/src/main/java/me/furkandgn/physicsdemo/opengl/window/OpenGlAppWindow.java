@@ -40,7 +40,6 @@ public class OpenGlAppWindow implements AppWindow {
   private final int width;
   private final int height;
   private final String title;
-  private final Camera camera;
   private final AppListener appListener;
 
   private Scene scene;
@@ -49,17 +48,16 @@ public class OpenGlAppWindow implements AppWindow {
   private long dt = 10000000; // initial delta time
   private boolean focused;
 
-  public OpenGlAppWindow(String title, int width, int height, Camera camera, AppListener appListener) {
+  public OpenGlAppWindow(String title, int width, int height, AppListener appListener) {
     this.title = title;
     this.width = width;
     this.height = height;
-    this.camera = camera;
     this.appListener = appListener;
   }
 
   @Override
   public void init(World world) {
-    this.scene = new SimulationScene(world, this.camera);
+    this.scene = new SimulationScene(world);
     this.initOpenGl();
     this.appListener.onInit();
     this.startLoop();
