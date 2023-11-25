@@ -1,7 +1,6 @@
 package me.furkandgn.physicsdemo.common.util;
 
-import me.furkandgn.physicsdemo.common.Point;
-import me.furkandgn.physicsdemo.common.body.attribute.Transform;
+import me.furkandgn.physicsdemo.common.body.Transform;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -11,11 +10,11 @@ import java.util.List;
  */
 public class ShapeUtils {
 
-  public static List<Point> createRectanglePoints(int width, int height) {
+  public static List<Point> createRectanglePoints(double width, double height) {
     List<Point> points = new ArrayList<>();
 
-    int halfWidth = (int) Math.round(width / 2.0);
-    int halfHeight = (int) Math.round(height / 2.0);
+    double halfWidth = width / 2.0;
+    double halfHeight = height / 2.0;
 
     points.add(Point.of(-halfWidth, -halfHeight)); // Left bottom
     points.add(Point.of(-halfWidth, halfHeight));  // Left Top
@@ -25,7 +24,7 @@ public class ShapeUtils {
     return points;
   }
 
-  public static List<Point> createCirclePoints(int radius, int pointCount) {
+  public static List<Point> createCirclePoints(double radius, int pointCount) {
     List<Point> points = new ArrayList<>();
 
     points.add(Point.of(0, 0));

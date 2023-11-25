@@ -1,15 +1,16 @@
 package me.furkandgn.physicsdemo.common.collision;
 
-import me.furkandgn.physicsdemo.common.Body;
-import me.furkandgn.physicsdemo.common.CollisionDetector;
-import me.furkandgn.physicsdemo.common.CollisionEvent;
-import me.furkandgn.physicsdemo.common.Point;
+import me.furkandgn.physicsdemo.common.body.Body;
+import me.furkandgn.physicsdemo.common.body.BodyType;
+import me.furkandgn.physicsdemo.common.util.Point;
 import org.joml.Vector2d;
 
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -25,6 +26,8 @@ import java.util.Set;
  */
 public class GJK implements CollisionDetector {
 
+  private static final Logger logger = Logger.getLogger("GJK");
+
   @Override
   public Set<CollisionEvent> findCollisions(List<Body> bodies) {
     Set<CollisionEvent> collisionEvents = new HashSet<>();
@@ -32,8 +35,14 @@ public class GJK implements CollisionDetector {
     for (Body body1 : bodies) {
       for (Body body2 : bodies) {
         if (body1.uniqueId().equals(body2.uniqueId())) continue;
-        if (intersects(body1, body2)) {
-          collisionEvents.add(new CollisionEvent(body1, body2));
+        if (body1.bodyType() == BodyType.FLAT_SURFACE && body2.bodyType() == BodyType.FLAT_SURFACE) continue;
+        if (body1.bodyType() == BodyType.CIRCLE && body2.bodyType() == BodyType.CIRCLE) continue;
+        try {
+          if (intersects(body1, body2)) {
+            collisionEvents.add(new CollisionEvent(body1, body2));
+          }
+        } catch (Exception e) {
+          logger.log(Level.WARNING, "An error occurred when finding collisions", e);
         }
       }
     }

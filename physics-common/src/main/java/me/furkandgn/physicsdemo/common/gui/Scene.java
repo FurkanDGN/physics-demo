@@ -5,6 +5,8 @@ package me.furkandgn.physicsdemo.common.gui;
  */
 public interface Scene {
 
+  void init();
+
   void tick(double dt);
 
   void render(double dt);

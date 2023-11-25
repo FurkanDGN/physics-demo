@@ -5,5 +5,5 @@ package me.furkandgn.physicsdemo.common.constants;
  */
 public interface PhysicConstants {
 
-  double GRAVITY_FORCE = -9.81;
+  double GRAVITY_FORCE = -9.81 * 10;
 }

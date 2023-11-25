@@ -3,14 +3,15 @@ package me.furkandgn.physicsdemo.opengl.window;
 import me.furkandgn.physicsdemo.common.gui.AppWindow;
 import me.furkandgn.physicsdemo.common.gui.Scene;
 import me.furkandgn.physicsdemo.common.gui.World;
+import me.furkandgn.physicsdemo.common.util.PerformanceTracker;
 import me.furkandgn.physicsdemo.common.util.TimeUtil;
-import me.furkandgn.physicsdemo.opengl.window.listener.AppListener;
-import me.furkandgn.physicsdemo.opengl.window.scene.SimulationScene;
-import me.furkandgn.physicsdemo.opengl.window.shader.Shader;
-import me.furkandgn.physicsdemo.opengl.window.util.OpenGlOptions;
-import me.furkandgn.physicsdemo.opengl.window.util.OpenGlUtil;
-import me.furkandgn.physicsdemo.opengl.window.util.PerformanceTracker;
-import me.furkandgn.physicsdemo.opengl.window.util.RenderUtil;
+import me.furkandgn.physicsdemo.opengl.camera.Camera;
+import me.furkandgn.physicsdemo.opengl.listener.AppListener;
+import me.furkandgn.physicsdemo.opengl.scene.SimulationScene;
+import me.furkandgn.physicsdemo.opengl.shader.Shader;
+import me.furkandgn.physicsdemo.opengl.util.OpenGlOptions;
+import me.furkandgn.physicsdemo.opengl.util.OpenGlUtil;
+import me.furkandgn.physicsdemo.opengl.util.RenderUtil;
 import org.lwjgl.glfw.Callbacks;
 
 import java.util.Objects;
@@ -37,6 +38,7 @@ public class OpenGlAppWindow implements AppWindow {
   private final int width;
   private final int height;
   private final String title;
+  private final Camera camera;
   private final AppListener appListener;
 
   private Scene scene;
@@ -45,28 +47,24 @@ public class OpenGlAppWindow implements AppWindow {
   private long dt = 10000000; // initial delta time
   private boolean focused;
 
-  public OpenGlAppWindow(String title,
-                         int width,
-                         int height,
-                         AppListener appListener) {
+  public OpenGlAppWindow(String title, int width, int height, Camera camera, AppListener appListener) {
     this.title = title;
     this.width = width;
     this.height = height;
+    this.camera = camera;
     this.appListener = appListener;
   }
 
   @Override
   public void init(World world) {
-    this.scene = new SimulationScene(world);
+    this.scene = new SimulationScene(world, this.camera);
     this.initOpenGl();
     this.appListener.onInit();
     this.startLoop();
   }
 
   private void initOpenGl() {
-    OpenGlOptions openGlOptions = new OpenGlOptions(this.width, this.height, this.title, focused -> {
-      this.focused = focused;
-    });
+    OpenGlOptions openGlOptions = new OpenGlOptions(this.width, this.height, this.title, focused -> this.focused = focused);
     this.window = OpenGlUtil.initOpenGl(openGlOptions);
     Shader shader = new Shader();
     shader.create();
@@ -74,6 +72,7 @@ public class OpenGlAppWindow implements AppWindow {
   }
 
   private void startLoop() {
+    this.scene.init();
     this.showWindow();
     this.loop();
     this.destroyWindow();
@@ -84,19 +83,24 @@ public class OpenGlAppWindow implements AppWindow {
     glClearColor(RED, GREEN, BLUE, 1f);
     this.beginTime = System.nanoTime();
     while (!glfwWindowShouldClose(this.window)) {
+      long now = System.nanoTime();
       this.preLoop();
       this.update();
       this.postLoop();
+      long last = System.nanoTime();
+      PERFORMANCE_TRACKER.recordFrameTime(last - now);
+      PERFORMANCE_TRACKER.countFrame();
+      this.updateTime();
+      this.limitFrameRate();
     }
   }
 
-
   private void update() {
-    double dtInDouble = this.dt / SECOND_TO_NANOS;
+    double dtNanos = this.dt / SECOND_TO_NANOS;
     long now = System.nanoTime();
 
     if (this.focused) {
-      this.scene.tick(dtInDouble);
+      this.scene.tick(dtNanos);
       this.appListener.onTick();
     }
 
@@ -104,22 +108,25 @@ public class OpenGlAppWindow implements AppWindow {
     PERFORMANCE_TRACKER.recordTickTime(last - now);
     now = System.nanoTime();
 
-    this.scene.render(dtInDouble);
+    this.scene.render(dtNanos);
 
     last = System.nanoTime();
     PERFORMANCE_TRACKER.recordRenderTime(last - now);
-    PERFORMANCE_TRACKER.countFrame();
   }
 
   private void preLoop() {
+    long now = System.nanoTime();
     glfwPollEvents();
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    long last = System.nanoTime();
+    PERFORMANCE_TRACKER.recordPreTime(last - now);
   }
 
   private void postLoop() {
+    long now = System.nanoTime();
     glfwSwapBuffers(this.window);
-    this.updateTime();
-    this.limitFrameRate();
+    long last = System.nanoTime();
+    PERFORMANCE_TRACKER.recordPostTime(last - now);
   }
 
   private void limitFrameRate() {
@@ -135,7 +142,8 @@ public class OpenGlAppWindow implements AppWindow {
         LockSupport.parkNanos(targetTime - System.nanoTime() - offset);
       }
 
-      this.updateTime();
+      this.dt = TimeUtil.getDeltaTimeNanos(currentTime);
+      this.beginTime = System.nanoTime();
     }
   }
 
@@ -154,6 +162,6 @@ public class OpenGlAppWindow implements AppWindow {
 
   private void updateTime() {
     this.dt = TimeUtil.getDeltaTimeNanos(this.beginTime);
-    this.beginTime = TimeUtil.getCurrentTimeNanos();
+    this.beginTime = System.nanoTime();
   }
 }

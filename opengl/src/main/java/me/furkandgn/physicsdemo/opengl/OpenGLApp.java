@@ -1,17 +1,17 @@
 package me.furkandgn.physicsdemo.opengl;
 
-import me.furkandgn.physicsdemo.common.CollisionDetector;
-import me.furkandgn.physicsdemo.common.CollisionSolver;
-import me.furkandgn.physicsdemo.common.PhysicEngine;
+import me.furkandgn.physicsdemo.common.collision.CollisionDetector;
+import me.furkandgn.physicsdemo.common.collision.CollisionSolver;
+import me.furkandgn.physicsdemo.common.collision.DefaultCollisionSolver;
 import me.furkandgn.physicsdemo.common.collision.GJK;
-import me.furkandgn.physicsdemo.common.engines.VerletPhysicEngine;
 import me.furkandgn.physicsdemo.common.gui.AppWindow;
 import me.furkandgn.physicsdemo.common.gui.World;
-import me.furkandgn.physicsdemo.common.manager.DefaultCollisionSolver;
+import me.furkandgn.physicsdemo.common.physic.PhysicEngine;
+import me.furkandgn.physicsdemo.common.physic.VerletPhysicEngine;
+import me.furkandgn.physicsdemo.opengl.camera.Camera;
+import me.furkandgn.physicsdemo.opengl.listener.AppListener;
 import me.furkandgn.physicsdemo.opengl.window.OpenGlAppWindow;
-import me.furkandgn.physicsdemo.opengl.window.camera.Camera;
-import me.furkandgn.physicsdemo.opengl.window.listener.AppListener;
-import me.furkandgn.physicsdemo.opengl.window.world.SimulationWorld;
+import me.furkandgn.physicsdemo.opengl.world.SimulationWorld;
 import org.joml.Vector2f;
 
 import static me.furkandgn.physicsdemo.common.constants.GuiConstants.HEIGHT;
@@ -30,7 +30,7 @@ public class OpenGLApp {
     World world = new SimulationWorld(physicEngine, camera, HEIGHT);
     AppListener appListener = new DefaultAppListener(world);
 
-    AppWindow appWindow = new OpenGlAppWindow("Physics Demo", WIDTH, HEIGHT, appListener);
+    AppWindow appWindow = new OpenGlAppWindow("Physics Demo", WIDTH, HEIGHT, camera, appListener);
     appWindow.init(world);
   }
 }

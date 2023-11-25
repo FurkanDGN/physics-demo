@@ -11,6 +11,7 @@
   <modules>
     <module>opengl</module>
     <module>physics-common</module>
+    <module>freetype2</module>
   </modules>
 
   <properties>
@@ -32,6 +33,12 @@
       <dependency>
         <groupId>me.furkandgn</groupId>
         <artifactId>physics-common</artifactId>
+        <version>1.0.0</version>
+      </dependency>
+
+      <dependency>
+        <groupId>me.furkandgn</groupId>
+        <artifactId>freetype2</artifactId>
         <version>1.0.0</version>
       </dependency>
     </dependencies>

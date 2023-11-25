@@ -1,7 +1,8 @@
 package me.furkandgn.physicsdemo.common.body.shapes;
 
-import me.furkandgn.physicsdemo.common.ColoredBody;
-import me.furkandgn.physicsdemo.common.body.attribute.Transform;
+import me.furkandgn.physicsdemo.common.body.BodyType;
+import me.furkandgn.physicsdemo.common.body.ColoredBody;
+import me.furkandgn.physicsdemo.common.body.Transform;
 import me.furkandgn.physicsdemo.common.util.ShapeUtils;
 import org.joml.Vector2d;
 import org.joml.Vector4f;
@@ -11,11 +12,11 @@ import org.joml.Vector4f;
  */
 public class CircleBody extends ColoredBody {
 
-  private static final int DISTANCE = 6;
+  private static final double DISTANCE = 0.1;
 
-  private final int radius;
+  private final double radius;
 
-  public CircleBody(int radius,
+  public CircleBody(double radius,
                     float mass,
                     int x,
                     int y,
@@ -24,7 +25,28 @@ public class CircleBody extends ColoredBody {
     this.radius = radius;
   }
 
-  public int radius() {
+  @Override
+  public BodyType bodyType() {
+    return BodyType.CIRCLE;
+  }
+
+  public double radius() {
     return this.radius;
+  }
+
+  @Override
+  public String toString() {
+    return "CircleBody{" +
+      "radius=" + this.radius +
+      ", color=" + this.color +
+      ", width=" + this.width +
+      ", height=" + this.height +
+      ", points=" + this.points +
+      ", transform=" + this.transform +
+      ", mass=" + this.mass +
+      ", uniqueId=" + this.uniqueId +
+      ", force=" + this.force +
+      ", velocity=" + this.velocity +
+      '}';
   }
 }
