@@ -77,7 +77,7 @@ public class FontRenderer {
       char c = charArray[i];
       FontCharacter fontCharacter = this.characters.get(c);
       float xPos = x + fontCharacter.bearing().x() * scale;
-      float yPos = y - (fontCharacter.size().y()) * scale;
+      float yPos = y - fontCharacter.bearing().y() * scale;
 
       float w = fontCharacter.size().x() * scale;
       float h = fontCharacter.size().y() * scale;
