@@ -4,14 +4,12 @@ import me.furkandgn.physicsdemo.common.gui.Scene;
 import me.furkandgn.physicsdemo.common.gui.World;
 import me.furkandgn.physicsdemo.opengl.camera.Camera;
 import me.furkandgn.physicsdemo.opengl.font.domain.FontAtlasInfo;
-import me.furkandgn.physicsdemo.opengl.font.domain.FontCharacter;
 import me.furkandgn.physicsdemo.opengl.font.load.FontLoader;
 import me.furkandgn.physicsdemo.opengl.font.load.GlFontLoader;
 import me.furkandgn.physicsdemo.opengl.font.render.FontRenderer;
 import org.joml.Vector3f;
 
 import java.io.InputStream;
-import java.util.Map;
 import java.util.Objects;
 
 /**
@@ -33,8 +31,8 @@ public class SimulationScene implements Scene {
   public void init() {
     FontLoader fontLoader = new GlFontLoader(true);
     InputStream inputStream = Objects.requireNonNull(SimulationScene.class.getResourceAsStream("/fonts/OpenSans-Light.ttf"), "File");
-    Map<Character, FontCharacter> characterMap = fontLoader.load(inputStream, 22);
-    this.fontRenderer = new FontRenderer(characterMap, this.camera.projectionMatrix());
+    FontAtlasInfo fontAtlasInfo = fontLoader.load(inputStream, 22);
+    this.fontRenderer = new FontRenderer(fontAtlasInfo, this.camera.projectionMatrix());
     this.fontRenderer.init();
   }
 
@@ -49,7 +47,7 @@ public class SimulationScene implements Scene {
   public void render(double dt) {
 //    this.world.render();
     for (int i = 0; i < 30; i++) {
-      this.fontRenderer.render("Hello world! Hello world! Hello world! Hello world! Hello world!", 1, 50 + (25 * i), 1f, new Vector3f(1f, 1f, 1f));
+      this.fontRenderer.render("Hello world! Hello world! Hello world! Hello world! Hello world!", 1, 30 + (45 * i), 1f, new Vector3f(1f, 1f, 1f));
     }
   }
 }

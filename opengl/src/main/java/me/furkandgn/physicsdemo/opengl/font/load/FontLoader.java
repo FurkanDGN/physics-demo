@@ -1,14 +1,13 @@
 package me.furkandgn.physicsdemo.opengl.font.load;
 
-import me.furkandgn.physicsdemo.opengl.font.domain.FontCharacter;
+import me.furkandgn.physicsdemo.opengl.font.domain.FontAtlasInfo;
 
 import java.io.InputStream;
-import java.util.Map;
 
 /**
  * @author Furkan Doğan
  */
 public interface FontLoader {
 
-  Map<Character, FontCharacter> load(InputStream inputStream, int fontSize);
+  FontAtlasInfo load(InputStream inputStream, int fontSize);
 }

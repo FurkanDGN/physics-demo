@@ -91,7 +91,7 @@ public class OpenGlAppWindow implements AppWindow {
       PERFORMANCE_TRACKER.recordFrameTime(last - now);
       PERFORMANCE_TRACKER.countFrame();
       this.updateTime();
-      this.limitFrameRate();
+//      this.limitFrameRate();
     }
   }
 
