@@ -79,22 +79,22 @@ public class FontRenderer {
       float xPos = x + fontCharacter.bearing().x() * scale;
       float yPos = y - (fontCharacter.size().y()) * scale;
 
-      float width = fontCharacter.size().x() * scale;
-      float height = fontCharacter.size().y() * scale;
+      float w = fontCharacter.size().x() * scale;
+      float h = fontCharacter.size().y() * scale;
 
       float atlasX = fontCharacter.coordinate().x() / this.atlasWidth;
       float atlasY = fontCharacter.coordinate().y() / this.atlasHeight;
-      float charWidthInAtlas = fontCharacter.size().x() / this.atlasWidth;
-      float charHeightInAtlas = fontCharacter.size().y() / this.atlasHeight;
+      float wA = fontCharacter.size().x() / this.atlasWidth;
+      float hA = fontCharacter.size().y() / this.atlasHeight;
 
       float[] charVertices = {
-        xPos, yPos + height, atlasX, atlasY + charHeightInAtlas,
-        xPos, yPos, atlasX, atlasY,
-        xPos + width, yPos, atlasX + charWidthInAtlas, atlasY,
+        xPos,     yPos + h,    atlasX,      atlasY + hA,
+        xPos,     yPos,        atlasX,      atlasY,
+        xPos + w, yPos,        atlasX + wA, atlasY,
 
-        xPos, yPos + height, atlasX, atlasY + charHeightInAtlas,
-        xPos + width, yPos, atlasX + charWidthInAtlas, atlasY,
-        xPos + width, yPos + height, atlasX + charWidthInAtlas, atlasY + charHeightInAtlas
+        xPos,     yPos + h,    atlasX,      atlasY + hA,
+        xPos + w, yPos,        atlasX + wA, atlasY,
+        xPos + w, yPos + h,    atlasX + wA, atlasY + hA
       };
       vertices[i] = charVertices;
 
