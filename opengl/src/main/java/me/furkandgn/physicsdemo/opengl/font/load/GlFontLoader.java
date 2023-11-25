@@ -11,6 +11,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.nio.ByteBuffer;
 import java.util.*;
+import java.util.stream.IntStream;
 
 import static org.lwjgl.opengl.GL11.*;
 import static org.lwjgl.opengl.GL12.GL_CLAMP_TO_EDGE;
@@ -40,12 +41,17 @@ public class GlFontLoader implements FontLoader {
       face.setPixelSizes(0, fontSize);
       glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
 
-      int atlasWidth = 1050;
-      int atlasHeight = 1050;
+      int atlasWidth = 1090;
+      int atlasHeight = 1090;
       ByteBuffer atlasBuffer = MemoryUtil.memAlloc(atlasWidth * atlasHeight);
 
       int offsetX = 0, offsetY = 0, rowHeight = 0;
       List<Character> chars = this.getChars(face);
+      if (chars.isEmpty()) {
+        chars = IntStream.range(32, 1000)
+          .mapToObj(operand -> (char) operand)
+          .toList();
+      }
       for (Character character : chars) {
         if (face.loadChar(character, FreeTypeConstants.FT_LOAD_RENDER)) {
           continue;
