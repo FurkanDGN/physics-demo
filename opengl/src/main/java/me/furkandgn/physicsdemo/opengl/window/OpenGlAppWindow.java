@@ -3,6 +3,7 @@ package me.furkandgn.physicsdemo.opengl.window;
 import me.furkandgn.physicsdemo.common.gui.AppWindow;
 import me.furkandgn.physicsdemo.common.gui.Scene;
 import me.furkandgn.physicsdemo.common.gui.World;
+import me.furkandgn.physicsdemo.common.util.MetricType;
 import me.furkandgn.physicsdemo.common.util.PerformanceTracker;
 import me.furkandgn.physicsdemo.common.util.TimeUtil;
 import me.furkandgn.physicsdemo.opengl.camera.Camera;
@@ -28,12 +29,13 @@ import static org.lwjgl.opengl.GL46.*;
  */
 public class OpenGlAppWindow implements AppWindow {
 
+  public static final PerformanceTracker PERFORMANCE_TRACKER = new PerformanceTracker();
+
   // BACKGROUND COLOR
   private static final float BRIGHTNESS = 0.3f;
   private static final float RED = (0x63 / 255f) * BRIGHTNESS;
   private static final float GREEN = (0x59 / 255f) * BRIGHTNESS;
   private static final float BLUE = (0x85 / 255f) * BRIGHTNESS;
-  private static final PerformanceTracker PERFORMANCE_TRACKER = new PerformanceTracker();
 
   private final int width;
   private final int height;
@@ -88,10 +90,10 @@ public class OpenGlAppWindow implements AppWindow {
       this.update();
       this.postLoop();
       long last = System.nanoTime();
-      PERFORMANCE_TRACKER.recordFrameTime(last - now);
+      PERFORMANCE_TRACKER.recordMetric(MetricType.FRAME, last - now);
       PERFORMANCE_TRACKER.countFrame();
       this.updateTime();
-//      this.limitFrameRate();
+      this.limitFrameRate();
     }
   }
 
@@ -105,13 +107,13 @@ public class OpenGlAppWindow implements AppWindow {
     }
 
     long last = System.nanoTime();
-    PERFORMANCE_TRACKER.recordTickTime(last - now);
+    PERFORMANCE_TRACKER.recordMetric(MetricType.TICK, last - now);
     now = System.nanoTime();
 
     this.scene.render(dtNanos);
 
     last = System.nanoTime();
-    PERFORMANCE_TRACKER.recordRenderTime(last - now);
+    PERFORMANCE_TRACKER.recordMetric(MetricType.RENDER, last - now);
   }
 
   private void preLoop() {
@@ -119,14 +121,14 @@ public class OpenGlAppWindow implements AppWindow {
     glfwPollEvents();
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     long last = System.nanoTime();
-    PERFORMANCE_TRACKER.recordPreTime(last - now);
+    PERFORMANCE_TRACKER.recordMetric(MetricType.PRE, last - now);
   }
 
   private void postLoop() {
     long now = System.nanoTime();
     glfwSwapBuffers(this.window);
     long last = System.nanoTime();
-    PERFORMANCE_TRACKER.recordPostTime(last - now);
+    PERFORMANCE_TRACKER.recordMetric(MetricType.POST, last - now);
   }
 
   private void limitFrameRate() {
