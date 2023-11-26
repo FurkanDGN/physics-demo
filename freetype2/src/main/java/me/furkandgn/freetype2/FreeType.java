@@ -3,6 +3,9 @@ package me.furkandgn.freetype2;
 import me.furkandgn.freetype2.GlyphSlot.Advance;
 
 import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.nio.ByteBuffer;
 
 public class FreeType {
@@ -129,14 +132,35 @@ public class FreeType {
   static { // Load library
     try {
       if (System.getProperty("os.name").toLowerCase().contains("mac")) {
-        System.load(new File("natives/libfreetype-jni.dylib").getAbsolutePath());
+        loadLibraryFromJar("/natives/libfreetype-jni.dylib");
       } else {
         throw new UnsupportedOperationException("Operating system not supported.");
       }
     } catch (UnsatisfiedLinkError e) {
       System.err.println("Can't find the native file for FreeType-jni.");
       throw e;
+    } catch (IOException e) {
+      throw new RuntimeException(e);
     }
   }
 
+  public static void loadLibraryFromJar(String path) throws IOException {
+    InputStream in = FreeType.class.getResourceAsStream(path);
+    byte[] buffer = new byte[1024];
+    int read = -1;
+    File temp = File.createTempFile(path.replace("/", ""), "");
+    FileOutputStream fos = new FileOutputStream(temp);
+
+    try {
+      while ((read = in.read(buffer)) != -1) {
+        fos.write(buffer, 0, read);
+      }
+    } finally {
+      fos.close();
+      in.close();
+    }
+
+    System.load(temp.getAbsolutePath());
+    temp.deleteOnExit();
+  }
 }
