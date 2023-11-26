@@ -1,8 +1,8 @@
 package me.furkandgn.physicsdemo.opengl.font.render;
 
 import me.furkandgn.physicsdemo.common.util.Assert;
-import me.furkandgn.physicsdemo.opengl.font.domain.FontCharacter;
 import me.furkandgn.physicsdemo.opengl.font.domain.FontAtlasInfo;
+import me.furkandgn.physicsdemo.opengl.font.domain.FontCharacter;
 import me.furkandgn.physicsdemo.opengl.shader.Shader;
 import org.joml.Matrix4f;
 import org.joml.Vector3f;

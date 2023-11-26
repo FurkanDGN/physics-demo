@@ -5,6 +5,7 @@ import org.lwjgl.glfw.GLFWErrorCallback;
 import org.lwjgl.glfw.GLFWVidMode;
 import org.lwjgl.glfw.GLFWWindowFocusCallback;
 import org.lwjgl.opengl.GL;
+import org.lwjgl.opengl.GL11;
 import org.lwjgl.system.MemoryStack;
 
 import java.nio.IntBuffer;
@@ -72,5 +73,12 @@ public class OpenGlUtil {
     glfwSwapInterval(0);
 
     return window;
+  }
+
+  public static void checkError() {
+    int error = GL11.glGetError();
+    if (error != 0) {
+      throw new RuntimeException("Opengl error: " + error);
+    }
   }
 }

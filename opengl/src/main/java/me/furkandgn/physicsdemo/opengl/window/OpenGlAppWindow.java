@@ -6,7 +6,6 @@ import me.furkandgn.physicsdemo.common.gui.World;
 import me.furkandgn.physicsdemo.common.util.MetricType;
 import me.furkandgn.physicsdemo.common.util.PerformanceTracker;
 import me.furkandgn.physicsdemo.common.util.TimeUtil;
-import me.furkandgn.physicsdemo.opengl.camera.Camera;
 import me.furkandgn.physicsdemo.opengl.listener.AppListener;
 import me.furkandgn.physicsdemo.opengl.scene.SimulationScene;
 import me.furkandgn.physicsdemo.opengl.shader.Shader;

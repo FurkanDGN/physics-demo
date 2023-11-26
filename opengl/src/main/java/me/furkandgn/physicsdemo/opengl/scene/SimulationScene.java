@@ -3,8 +3,6 @@ package me.furkandgn.physicsdemo.opengl.scene;
 import me.furkandgn.physicsdemo.common.gui.Scene;
 import me.furkandgn.physicsdemo.common.gui.World;
 import me.furkandgn.physicsdemo.common.util.MetricType;
-import me.furkandgn.physicsdemo.common.util.PerformanceTracker;
-import me.furkandgn.physicsdemo.opengl.camera.Camera;
 import me.furkandgn.physicsdemo.opengl.font.domain.FontAtlasInfo;
 import me.furkandgn.physicsdemo.opengl.font.load.FontLoader;
 import me.furkandgn.physicsdemo.opengl.font.load.GlFontLoader;
@@ -13,10 +11,7 @@ import me.furkandgn.physicsdemo.opengl.window.OpenGlAppWindow;
 import org.joml.Matrix4f;
 import org.joml.Vector3f;
 
-import java.awt.*;
 import java.io.InputStream;
-import java.util.Arrays;
-import java.util.List;
 import java.util.Objects;
 
 import static me.furkandgn.physicsdemo.common.constants.GuiConstants.HEIGHT;
