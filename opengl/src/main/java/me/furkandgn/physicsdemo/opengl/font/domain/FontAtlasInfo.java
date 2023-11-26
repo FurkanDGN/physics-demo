@@ -7,5 +7,5 @@ import java.util.Map;
 /**
  * @author Furkan Doğan
  */
-public record FontAtlasInfo(int atlasTextureId, Vector2i atlasSize, Map<Character, FontCharacter> characters) {
+public record FontAtlasInfo(int textureId, Vector2i size, Map<Character, FontCharacter> characters) {
 }
