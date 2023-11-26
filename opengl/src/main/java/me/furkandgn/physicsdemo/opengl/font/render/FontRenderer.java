@@ -74,6 +74,21 @@ public class FontRenderer {
     this.shader.detach();
   }
 
+  private void prepareShader(Vector3f color) {
+    this.shader.use();
+    this.shader.uploadVec3f("textColor", color);
+    this.shader.uploadMat4f("projection", this.projectionMatrix);
+  }
+
+  private void prepareOpenGl() {
+    glEnable(GL_BLEND);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+    glActiveTexture(GL_TEXTURE0);
+    glBindVertexArray(this.vao);
+    glBindTexture(GL_TEXTURE_2D, this.atlas.textureId());
+    glBindBuffer(GL_ARRAY_BUFFER, this.vbo);
+  }
+
   private float[][] buildVertices(char[] charArray, float x, float y, float scale) {
     float[][] vertices = new float[charArray.length][];
 
@@ -118,20 +133,5 @@ public class FontRenderer {
       xPos + w, yPos,        atlasX + wA, atlasY,
       xPos + w, yPos + h,    atlasX + wA, atlasY + hA
     };
-  }
-
-  private void prepareShader(Vector3f color) {
-    this.shader.use();
-    this.shader.uploadVec3f("textColor", color);
-    this.shader.uploadMat4f("projection", this.projectionMatrix);
-  }
-
-  private void prepareOpenGl() {
-    glEnable(GL_BLEND);
-    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-    glActiveTexture(GL_TEXTURE0);
-    glBindVertexArray(this.vao);
-    glBindTexture(GL_TEXTURE_2D, this.atlas.textureId());
-    glBindBuffer(GL_ARRAY_BUFFER, this.vbo);
   }
 }
